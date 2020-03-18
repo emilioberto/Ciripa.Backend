@@ -1,0 +1,80 @@
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+namespace Ciripa.Web.Migrations
+{
+    public partial class Initial : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Kids",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    FiscalCode = table.Column<string>(nullable: true),
+                    Birthdate = table.Column<DateTime>(nullable: false),
+                    From = table.Column<DateTime>(nullable: true),
+                    To = table.Column<DateTime>(nullable: true),
+                    ContractType = table.Column<int>(nullable: false),
+                    ContractValue = table.Column<double>(nullable: false),
+                    Notes = table.Column<string>(nullable: true),
+                    SubscriptionPaid = table.Column<bool>(nullable: false),
+                    Subscription = table.Column<double>(nullable: false),
+                    ParentFirstName = table.Column<string>(nullable: true),
+                    ParentLastName = table.Column<string>(nullable: true),
+                    ParentFiscalCode = table.Column<string>(nullable: true),
+                    Address = table.Column<string>(nullable: true),
+                    City = table.Column<string>(nullable: true),
+                    Cap = table.Column<string>(nullable: true),
+                    Province = table.Column<string>(nullable: true),
+                    PaymentMethod = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Kids", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Presences",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Date = table.Column<DateTime>(nullable: false),
+                    KidId = table.Column<int>(nullable: false),
+                    MorningEntry = table.Column<DateTime>(nullable: true),
+                    MorningExit = table.Column<DateTime>(nullable: true),
+                    EveningEntry = table.Column<DateTime>(nullable: true),
+                    EveningExit = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Presences", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Presences_Kids_KidId",
+                        column: x => x.KidId,
+                        principalTable: "Kids",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Presences_KidId",
+                table: "Presences",
+                column: "KidId");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Presences");
+
+            migrationBuilder.DropTable(
+                name: "Kids");
+        }
+    }
+}

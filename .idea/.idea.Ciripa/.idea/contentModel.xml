@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Code\Ciripa\Ciripa.Backend\Ciripa" t="IncludeFlat">
+      <e p="Ciripa.Business" t="IncludeRecursive">
+        <e p="AutomapperConfiguration.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="BusinessConfiguration.cs" t="Include" />
+        <e p="Ciripa.Business.csproj" t="IncludeRecursive" />
+        <e p="Commands" t="Include">
+          <e p="Kids" t="Include">
+            <e p="CreateKidCommand.cs" t="Include" />
+            <e p="DeleteKidCommand.cs" t="Include" />
+            <e p="UpdateKidCommand.cs" t="Include" />
+          </e>
+          <e p="Presences" t="Include">
+            <e p="CreateMissingPresencesCommand.cs" t="Include" />
+            <e p="UpsertPresencesCommand.cs" t="Include" />
+          </e>
+          <e p="Settings" t="Include">
+            <e p="UpdateSettingsCommand.cs" t="Include" />
+          </e>
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.1" t="Include">
+              <e p="Ciripa.Business.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Queries" t="Include">
+          <e p="Kids" t="Include">
+            <e p="GetKidQuery.cs" t="Include" />
+            <e p="GetKidsByDateQuery.cs" t="Include" />
+            <e p="GetKidsListQuery.cs" t="Include" />
+          </e>
+          <e p="Presences" t="Include">
+            <e p="GetKidPresencesByDateQuery.cs" t="Include" />
+            <e p="GetPresencesByDateQuery.cs" t="Include" />
+          </e>
+          <e p="Settings" t="Include">
+            <e p="GetSettingsQuery.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Services" t="Include" />
+      </e>
+      <e p="Ciripa.Data" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Ciripa.Data.csproj" t="IncludeRecursive" />
+        <e p="CiripaContext.cs" t="Include" />
+        <e p="Date.cs" t="Include" />
+        <e p="DateEntitiesExtensions.cs" t="Include" />
+        <e p="DateExtensions.cs" t="Include" />
+        <e p="Entities" t="Include">
+          <e p="ContractType.cs" t="Include" />
+          <e p="Kid.cs" t="Include" />
+          <e p="PaymentMethod.cs" t="Include" />
+          <e p="Presence.cs" t="Include" />
+          <e p="Settings.cs" t="Include" />
+        </e>
+        <e p="Interfaces" t="Include">
+          <e p="IBaseEntity.cs" t="Include" />
+          <e p="IDateEntity.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.1" t="Include">
+              <e p="Ciripa.Data.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="Ciripa.Domain" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Ciripa.Domain.csproj" t="IncludeRecursive" />
+        <e p="DTO" t="Include">
+          <e p="ByDateDto.cs" t="Include" />
+          <e p="KidDto.cs" t="Include" />
+          <e p="PresenceDto.cs" t="Include" />
+          <e p="PresenceListItemDto.cs" t="Include" />
+          <e p="SettingsDto.cs" t="Include" />
+          <e p="UpsertKidDto.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.1" t="Include">
+              <e p="Ciripa.Domain.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="Ciripa.sln" t="IncludeFlat" />
+      <e p="Ciripa.Web" t="IncludeRecursive">
+        <e p="appsettings.Development.json" t="Include" />
+        <e p="appsettings.json" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="ciripa.db" t="Include" />
+        <e p="Ciripa.Web.csproj" t="IncludeRecursive" />
+        <e p="Controllers" t="Include">
+          <e p="KidsController.cs" t="Include" />
+          <e p="PresencesController.cs" t="Include" />
+          <e p="SettingsController.cs" t="Include" />
+        </e>
+        <e p="DateConverter.cs" t="Include" />
+        <e p="DateTimeConverter.cs" t="Include" />
+        <e p="Migrations" t="Include">
+          <e p="20200317211637_Initial.cs" t="Include" />
+          <e p="20200317211637_Initial.Designer.cs" t="Include" />
+          <e p="20200318201003_Settings.cs" t="Include" />
+          <e p="20200318201003_Settings.Designer.cs" t="Include" />
+          <e p="CiripaContextModelSnapshot.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="Ciripa.Web.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="launchSettings.json" t="Include" />
+        </e>
+        <e p="Startup.cs" t="Include" />
+      </e>
+      <e p="packages" t="ExcludeRecursive" />
+    </e>
+    <e p="C:\Users\Emilio\.Rider2019.3\config\consoles\db" t="IncludeRecursive" />
+    <e p="C:\Users\Emilio\.Rider2019.3\config\extensions" t="IncludeRecursive" />
+    <e p="C:\Users\Emilio\.Rider2019.3\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Emilio\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_Ciripa.-1014820628.00" t="ExcludeRecursive" />
+  </component>
+</project>
