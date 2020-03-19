@@ -21,7 +21,7 @@ namespace Ciripa.Web.Controllers
         [HttpPost("list/kid/{kidId}")]
         public Task<List<PresenceListItemDto>> GetKidPresencesByMonth(int kidId, [FromBody] ByDateDto model)
         {
-            return _mediator.Send(new GetKidPresencesByDateQuery(kidId, model.Date));
+            return _mediator.Send(new GetMonthlyPresencesByKidQuery(kidId, model.Date));
         }
         
         [HttpPost("list")]

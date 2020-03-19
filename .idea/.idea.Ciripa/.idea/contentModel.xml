@@ -35,7 +35,7 @@
             <e p="GetKidsListQuery.cs" t="Include" />
           </e>
           <e p="Presences" t="Include">
-            <e p="GetKidPresencesByDateQuery.cs" t="Include" />
+            <e p="GetMonthlyPresencesByKidQuery.cs" t="Include" />
             <e p="GetPresencesByDateQuery.cs" t="Include" />
           </e>
           <e p="Settings" t="Include">
