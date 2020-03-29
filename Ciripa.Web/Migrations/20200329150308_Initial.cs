@@ -20,10 +20,10 @@ namespace Ciripa.Web.Migrations
                     From = table.Column<DateTime>(nullable: true),
                     To = table.Column<DateTime>(nullable: true),
                     ContractType = table.Column<int>(nullable: false),
-                    ContractValue = table.Column<double>(nullable: false),
+                    ContractValue = table.Column<decimal>(nullable: false),
                     Notes = table.Column<string>(nullable: true),
                     SubscriptionPaid = table.Column<bool>(nullable: false),
-                    Subscription = table.Column<double>(nullable: false),
+                    SubscriptionAmount = table.Column<decimal>(nullable: false),
                     ParentFirstName = table.Column<string>(nullable: true),
                     ParentLastName = table.Column<string>(nullable: true),
                     ParentFiscalCode = table.Column<string>(nullable: true),
@@ -36,6 +36,21 @@ namespace Ciripa.Web.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Kids", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Settings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    HourCost = table.Column<decimal>(nullable: false),
+                    ExtraHourCost = table.Column<decimal>(nullable: false),
+                    SubscriptionAmount = table.Column<decimal>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Settings", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -62,6 +77,11 @@ namespace Ciripa.Web.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Settings",
+                columns: new[] { "Id", "ExtraHourCost", "HourCost", "SubscriptionAmount" },
+                values: new object[] { 1, 7.0m, 6.0m, 200.0m });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Presences_KidId",
                 table: "Presences",
@@ -72,6 +92,9 @@ namespace Ciripa.Web.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Presences");
+
+            migrationBuilder.DropTable(
+                name: "Settings");
 
             migrationBuilder.DropTable(
                 name: "Kids");

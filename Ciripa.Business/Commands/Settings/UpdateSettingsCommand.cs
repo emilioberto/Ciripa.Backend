@@ -34,7 +34,7 @@ namespace Ciripa.Business.Commands
         {
             var settings = _context.Set<Settings>().Single();
 
-            settings.ContractAmount = request.Settings.ContractAmount;
+            settings.SubscriptionAmount = request.Settings.SubscriptionAmount;
             settings.HourCost = request.Settings.HourCost;
             settings.ExtraHourCost = request.Settings.ExtraHourCost;
 

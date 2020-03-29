@@ -15,9 +15,9 @@ namespace Ciripa.Domain.DTO
         public string Notes { get; set; }
         //Billing data
         public ContractType ContractType { get; set; }
-        public double ContractValue { get; set; }
+        public decimal ContractValue { get; set; }
         public bool SubscriptionPaid { get; set; }
-        public double Subscription { get; set; }
+        public decimal SubscriptionAmount { get; set; }
         public string ParentFirstName { get; set; }
         public string ParentLastName { get; set; }
         public string ParentFiscalCode { get; set; }

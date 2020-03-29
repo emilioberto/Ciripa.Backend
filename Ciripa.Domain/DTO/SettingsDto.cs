@@ -4,6 +4,6 @@
     {
         public decimal HourCost { get; set; }
         public decimal ExtraHourCost { get; set; }
-        public decimal ContractAmount { get; set; }
+        public decimal SubscriptionAmount { get; set; }
     }
 }

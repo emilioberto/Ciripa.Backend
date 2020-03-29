@@ -33,7 +33,7 @@ namespace Ciripa.Data
             modelBuilder
                 .Entity<Kid>()
                 .HasMany(x => x.PresencesList);
-
+            
             modelBuilder
                 .Entity<Presence>()
                 .HasOne(x => x.Kid);

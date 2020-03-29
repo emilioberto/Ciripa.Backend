@@ -104,10 +104,8 @@
         <e p="DateConverter.cs" t="Include" />
         <e p="DateTimeConverter.cs" t="Include" />
         <e p="Migrations" t="Include">
-          <e p="20200317211637_Initial.cs" t="Include" />
-          <e p="20200317211637_Initial.Designer.cs" t="Include" />
-          <e p="20200318201003_Settings.cs" t="Include" />
-          <e p="20200318201003_Settings.Designer.cs" t="Include" />
+          <e p="20200329150308_Initial.cs" t="Include" />
+          <e p="20200329150308_Initial.Designer.cs" t="Include" />
           <e p="CiripaContextModelSnapshot.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">

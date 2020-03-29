@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Ciripa.Web.Controllers
 {
-    [Route("settings")]
+    [Route("api/settings")]
     public class SettingsController : Controller
     {
         private readonly IMediator _mediator;

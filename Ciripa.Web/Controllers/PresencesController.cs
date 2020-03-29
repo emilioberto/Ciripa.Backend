@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Ciripa.Web.Controllers
 {
-    [Route("presences")]
+    [Route("api/presences")]
     public class PresencesController : Controller
     {
         private readonly IMediator _mediator;

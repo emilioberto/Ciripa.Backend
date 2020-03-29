@@ -37,8 +37,8 @@ namespace Ciripa.Web.Migrations
                     b.Property<int>("ContractType")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("ContractValue")
-                        .HasColumnType("REAL");
+                    b.Property<decimal>("ContractValue")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("TEXT");
@@ -70,8 +70,8 @@ namespace Ciripa.Web.Migrations
                     b.Property<string>("Province")
                         .HasColumnType("TEXT");
 
-                    b.Property<double>("Subscription")
-                        .HasColumnType("REAL");
+                    b.Property<decimal>("SubscriptionAmount")
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("SubscriptionPaid")
                         .HasColumnType("INTEGER");
@@ -121,13 +121,13 @@ namespace Ciripa.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("ContractAmount")
-                        .HasColumnType("TEXT");
-
                     b.Property<decimal>("ExtraHourCost")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("HourCost")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("SubscriptionAmount")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -138,9 +138,9 @@ namespace Ciripa.Web.Migrations
                         new
                         {
                             Id = 1,
-                            ContractAmount = 200.0m,
                             ExtraHourCost = 7.0m,
-                            HourCost = 6.0m
+                            HourCost = 6.0m,
+                            SubscriptionAmount = 200.0m
                         });
                 });
 

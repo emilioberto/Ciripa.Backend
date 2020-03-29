@@ -18,11 +18,11 @@ namespace Ciripa.Data.Entities
         public DateTime? From { get; set; }
         public DateTime? To { get; set; }
         public ContractType ContractType { get; set; }
-        public double ContractValue { get; set; }
+        public decimal ContractValue { get; set; }
         public string Notes { get; set; }
         public bool SubscriptionPaid { get; set; }
 
-        public double Subscription { get; set; }
+        public decimal SubscriptionAmount { get; set; }
 
         //Billing data
         public string ParentFirstName { get; set; }

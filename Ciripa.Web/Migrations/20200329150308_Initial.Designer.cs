@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ciripa.Web.Migrations
 {
     [DbContext(typeof(CiripaContext))]
-    [Migration("20200317211637_Initial")]
+    [Migration("20200329150308_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,8 +39,8 @@ namespace Ciripa.Web.Migrations
                     b.Property<int>("ContractType")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("ContractValue")
-                        .HasColumnType("REAL");
+                    b.Property<decimal>("ContractValue")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("TEXT");
@@ -72,8 +72,8 @@ namespace Ciripa.Web.Migrations
                     b.Property<string>("Province")
                         .HasColumnType("TEXT");
 
-                    b.Property<double>("Subscription")
-                        .HasColumnType("REAL");
+                    b.Property<decimal>("SubscriptionAmount")
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("SubscriptionPaid")
                         .HasColumnType("INTEGER");
@@ -115,6 +115,35 @@ namespace Ciripa.Web.Migrations
                     b.HasIndex("KidId");
 
                     b.ToTable("Presences");
+                });
+
+            modelBuilder.Entity("Ciripa.Data.Entities.Settings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("ExtraHourCost")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("HourCost")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("SubscriptionAmount")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Settings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ExtraHourCost = 7.0m,
+                            HourCost = 6.0m,
+                            SubscriptionAmount = 200.0m
+                        });
                 });
 
             modelBuilder.Entity("Ciripa.Data.Entities.Presence", b =>
