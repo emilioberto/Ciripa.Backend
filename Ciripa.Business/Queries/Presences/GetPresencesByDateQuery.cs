@@ -34,13 +34,14 @@ namespace Ciripa.Business.Queries.Presences
             _mapper = mapper;
         }
 
-        public Task<List<PresenceDto>> Handle(GetPresencesByDateQuery request, CancellationToken ct)
+        public async Task<List<PresenceDto>> Handle(GetPresencesByDateQuery request, CancellationToken ct)
         {
-            return _context
+            var result = await _context
                 .Set<Presence>()
                 .Where(x => x.Date == request.Date)
                 .ProjectTo<PresenceDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(ct);
+            return result;
         }
     }
 }

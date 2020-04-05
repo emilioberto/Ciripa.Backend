@@ -13,5 +13,13 @@ namespace Ciripa.Data
                 e => e
             );
         }
+        
+        public static void IsDate(this PropertyBuilder<Date?> source)
+        {
+            source.HasConversion(
+                e =>  (DateTime) e,
+                e => e
+            );
+        }
     }
 }

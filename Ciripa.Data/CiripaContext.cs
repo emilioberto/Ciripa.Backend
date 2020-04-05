@@ -29,11 +29,12 @@ namespace Ciripa.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new DateConfiguration<Presence>());
-            
+
+            modelBuilder.Entity<Kid>().ConfigureKidDateFields();
             modelBuilder
                 .Entity<Kid>()
                 .HasMany(x => x.PresencesList);
-            
+
             modelBuilder
                 .Entity<Presence>()
                 .HasOne(x => x.Kid);

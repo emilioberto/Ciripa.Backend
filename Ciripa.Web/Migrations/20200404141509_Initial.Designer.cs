@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ciripa.Web.Migrations
 {
     [DbContext(typeof(CiripaContext))]
-    [Migration("20200329150308_Initial")]
+    [Migration("20200404141509_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

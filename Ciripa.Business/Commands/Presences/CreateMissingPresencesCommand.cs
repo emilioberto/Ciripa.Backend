@@ -8,11 +8,12 @@ using Ciripa.Business.Queries.Presences;
 using Ciripa.Data;
 using Ciripa.Data.Entities;
 using Ciripa.Domain;
+using Ciripa.Domain.DTO;
 using MediatR;
 
 namespace Ciripa.Business.Commands
 {
-    public class CreateMissingPresencesCommand : IRequest<bool>
+    public class CreateMissingPresencesCommand : IRequest<List<PresenceDto>>
     {
         public Date Date { get; private set; }
 
@@ -22,7 +23,7 @@ namespace Ciripa.Business.Commands
         }
     }
 
-    public class CreateMissingPresencesCommandHandler : IRequestHandler<CreateMissingPresencesCommand, bool>
+    public class CreateMissingPresencesCommandHandler : IRequestHandler<CreateMissingPresencesCommand, List<PresenceDto>>
     {
         private readonly CiripaContext _context;
         private readonly IMapper _mapper;
@@ -35,7 +36,7 @@ namespace Ciripa.Business.Commands
             _mediator = mediator;
         }
 
-        public async Task<bool> Handle(CreateMissingPresencesCommand request, CancellationToken ct)
+        public async Task<List<PresenceDto>> Handle(CreateMissingPresencesCommand request, CancellationToken ct)
         {
             var kids = await _mediator.Send(new GetKidsByDateQuery(request.Date), ct);
             var presences = await _mediator.Send(new GetPresencesByDateQuery(request.Date), ct);
@@ -48,10 +49,14 @@ namespace Ciripa.Business.Commands
                     missingPresences.Add(new Presence(kid.Id, request.Date));
                 }
             });
-            
-            _context.AddRange(missingPresences);
-            await _context.SaveChangesAsync(ct);
-            return true;
+
+            if (missingPresences.Count > 0)
+            {
+                _context.AddRange(missingPresences);
+                await _context.SaveChangesAsync(ct);
+            }
+
+            return await _mediator.Send(new GetPresencesByDateQuery(request.Date), ct);
         }
     }
 }

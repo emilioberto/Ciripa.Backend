@@ -27,8 +27,7 @@ namespace Ciripa.Web.Controllers
         [HttpPost("list")]
         public async Task<List<PresenceDto>> GetPresencesByDate([FromBody] ByDateDto model)
         {
-            await _mediator.Send(new CreateMissingPresencesCommand(model.Date));
-            return await _mediator.Send(new GetPresencesByDateQuery(model.Date));
+            return await _mediator.Send(new CreateMissingPresencesCommand(model.Date));
         }
         
         [HttpPut()]

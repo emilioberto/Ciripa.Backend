@@ -80,6 +80,7 @@
           <e p="PresenceListItemDto.cs" t="Include" />
           <e p="SettingsDto.cs" t="Include" />
           <e p="UpsertKidDto.cs" t="Include" />
+          <e p="UpsertPresenceDto.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
@@ -104,8 +105,8 @@
         <e p="DateConverter.cs" t="Include" />
         <e p="DateTimeConverter.cs" t="Include" />
         <e p="Migrations" t="Include">
-          <e p="20200329150308_Initial.cs" t="Include" />
-          <e p="20200329150308_Initial.Designer.cs" t="Include" />
+          <e p="20200404141509_Initial.cs" t="Include" />
+          <e p="20200404141509_Initial.Designer.cs" t="Include" />
           <e p="CiripaContextModelSnapshot.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">

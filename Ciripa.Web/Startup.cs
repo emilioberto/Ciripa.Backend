@@ -61,7 +61,11 @@ namespace Ciripa.Web
         {
             app.UseSwagger();
 
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ciripà API v1.0"));
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ciripà API v1.0");
+                c.DisplayRequestDuration();
+            });
 
             MigrateDatabase(app);
 
@@ -72,7 +76,7 @@ namespace Ciripa.Web
 
             app.UseCors();
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
 
