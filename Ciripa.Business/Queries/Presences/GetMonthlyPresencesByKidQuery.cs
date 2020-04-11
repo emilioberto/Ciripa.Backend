@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ciripa.Business.Queries.Presences
 {
-    public class GetMonthlyPresencesByKidQuery : IRequest<List<PresenceListItemDto>>
+    public class GetMonthlyPresencesByKidQuery : IRequest<PresencesSummaryDto>
     {
         public int KidId { get; private set; }
         public Date Date { get; private set; }
@@ -28,7 +28,7 @@ namespace Ciripa.Business.Queries.Presences
     }
 
     public class
-        GetKidPresencesByDateQueryHandler : IRequestHandler<GetMonthlyPresencesByKidQuery, List<PresenceListItemDto>>
+        GetKidPresencesByDateQueryHandler : IRequestHandler<GetMonthlyPresencesByKidQuery, PresencesSummaryDto>
     {
         private readonly CiripaContext _context;
         private readonly IMapper _mapper;
@@ -39,7 +39,7 @@ namespace Ciripa.Business.Queries.Presences
             _mapper = mapper;
         }
 
-        public async Task<List<PresenceListItemDto>> Handle(GetMonthlyPresencesByKidQuery request, CancellationToken ct)
+        public async Task<PresencesSummaryDto> Handle(GetMonthlyPresencesByKidQuery request, CancellationToken ct)
         {
             var result = await _context
                 .Set<Presence>()
@@ -63,7 +63,23 @@ namespace Ciripa.Business.Queries.Presences
                 presenceList.Add(dailyPresence ?? new Presence(request.KidId, day));
             });
 
-            return _mapper.Map<List<PresenceListItemDto>>(presenceList);
+            var presences = _mapper.Map<List<PresenceListItemDto>>(presenceList);
+
+            var settings = await _context.Set<Settings>().FirstAsync(ct);
+
+            var totalHours = CalculateTotalHours(presences);
+            var totalAmount = totalHours * settings.HourCost;
+            
+            return new PresencesSummaryDto(presences, totalHours, totalAmount);
+ 
+        }
+
+        private decimal CalculateTotalHours(List<PresenceListItemDto> presences)
+        {
+            var morningHours = presences.Sum(x => x.MorningHours);
+            var eveningHours = presences.Sum(x => x.EveningHours);
+            var total = morningHours + eveningHours;
+            return Convert.ToDecimal(total);
         }
     }
 }

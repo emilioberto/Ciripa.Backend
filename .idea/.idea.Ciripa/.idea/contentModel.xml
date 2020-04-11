@@ -78,6 +78,7 @@
           <e p="KidDto.cs" t="Include" />
           <e p="PresenceDto.cs" t="Include" />
           <e p="PresenceListItemDto.cs" t="Include" />
+          <e p="PresencesSummaryDto.cs" t="Include" />
           <e p="SettingsDto.cs" t="Include" />
           <e p="UpsertKidDto.cs" t="Include" />
           <e p="UpsertPresenceDto.cs" t="Include" />
