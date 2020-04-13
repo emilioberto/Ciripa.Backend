@@ -53,6 +53,7 @@ namespace Ciripa.Web
                     {
                         options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                         options.SerializerSettings.Converters.Add(new DateConverter());
+                        options.SerializerSettings.Converters.Add(new NullableDateConverter());
                     });
         }
 
