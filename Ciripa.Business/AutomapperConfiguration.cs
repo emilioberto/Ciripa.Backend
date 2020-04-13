@@ -13,9 +13,11 @@ namespace Ciripa.Business
             
             CreateMap<Kid, UpsertKidDto>()
                 .ReverseMap();
-            
-            CreateMap<Presence, PresenceDto>()
-                .ReverseMap();
+
+            CreateMap<Presence, PresenceDto>();
+
+            CreateMap<PresenceDto, Presence>()
+                .ForMember(x => x.Kid, opt => opt.Ignore());
             
             CreateMap<Presence, PresenceListItemDto>()
                 .ForMember(x => x.MorningHours, opt => opt.MapFrom(x => CalculateMorningHours(x)))
