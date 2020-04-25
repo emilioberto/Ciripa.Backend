@@ -30,7 +30,6 @@ namespace Ciripa.Data
         {
             modelBuilder.ApplyConfiguration(new DateConfiguration<Presence>());
 
-            modelBuilder.Entity<Kid>().ConfigureKidDateFields();
             modelBuilder
                 .Entity<Kid>()
                 .HasMany(x => x.PresencesList);

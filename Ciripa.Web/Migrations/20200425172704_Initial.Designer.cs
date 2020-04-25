@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ciripa.Web.Migrations
 {
     [DbContext(typeof(CiripaContext))]
-    [Migration("20200404141509_Initial")]
+    [Migration("20200425172704_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,7 +48,7 @@ namespace Ciripa.Web.Migrations
                     b.Property<string>("FiscalCode")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("From")
+                    b.Property<DateTime>("From")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastName")

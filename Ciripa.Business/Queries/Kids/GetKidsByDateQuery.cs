@@ -34,13 +34,16 @@ namespace Ciripa.Business.Queries
             _mapper = mapper;
         }
 
-        public Task<List<KidDto>> Handle(GetKidsByDateQuery request, CancellationToken ct)
+        public async Task<List<KidDto>> Handle(GetKidsByDateQuery request, CancellationToken ct)
         {
-            return _context
+            var kids = await _context
                 .Set<Kid>()
-                .Where(x => x.From <= request.Date && (x.To == null || x.To >= request.Date))
                 .ProjectTo<KidDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(ct);
+
+            return kids
+                .Where(x => x.From <= request.Date && (x.To == null || x.To >= request.Date))
+                .ToList();
         }
     }
 }

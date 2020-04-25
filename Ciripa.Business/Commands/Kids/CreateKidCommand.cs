@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Ciripa.Data;
 using Ciripa.Data.Entities;
+using Ciripa.Domain;
 using Ciripa.Domain.DTO;
 using MediatR;
 
@@ -14,6 +15,12 @@ namespace Ciripa.Business.Commands
 
         public CreateKidCommand(UpsertKidDto model)
         {
+            model.From = new Date(model.From).AsDateTime();
+            if (model.To != null)
+            {
+                model.To = new Date(model.To.Value).AsDateTime();
+            }
+
             Model = model;
         }
     }
@@ -31,7 +38,7 @@ namespace Ciripa.Business.Commands
 
         public async Task<int> Handle(CreateKidCommand request, CancellationToken ct)
         {
-            var kid = _mapper.Map<Kid>(request.Model); 
+            var kid = _mapper.Map<Kid>(request.Model);
             _context.Kids.Add(kid);
             await _context.SaveChangesAsync(ct);
             return kid.Id;

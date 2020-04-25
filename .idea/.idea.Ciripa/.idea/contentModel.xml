@@ -108,6 +108,8 @@
         <e p="Migrations" t="Include">
           <e p="20200404141509_Initial.cs" t="Include" />
           <e p="20200404141509_Initial.Designer.cs" t="Include" />
+          <e p="20200425153240_Test.cs" t="Include" />
+          <e p="20200425153240_Test.Designer.cs" t="Include" />
           <e p="CiripaContextModelSnapshot.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
@@ -125,9 +127,9 @@
       </e>
       <e p="packages" t="ExcludeRecursive" />
     </e>
-    <e p="C:\Users\Emilio\.Rider2019.3\config\consoles\db" t="IncludeRecursive" />
-    <e p="C:\Users\Emilio\.Rider2019.3\config\extensions" t="IncludeRecursive" />
-    <e p="C:\Users\Emilio\.Rider2019.3\system\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\Emilio\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_Ciripa.-1014820628.00" t="ExcludeRecursive" />
+    <e p="C:\Users\Emilio\AppData\local\JetBrains\Rider2020.1\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Emilio\AppData\local\JetBrains\Rider2020.1\resharper-host\local\Transient\ReSharperHost\v201\SolutionCaches\_Ciripa.-1014820628.00" t="ExcludeRecursive" />
+    <e p="C:\Users\Emilio\AppData\Roaming\JetBrains\Rider2020.1\consoles\db" t="IncludeRecursive" />
+    <e p="C:\Users\Emilio\AppData\Roaming\JetBrains\Rider2020.1\extensions" t="IncludeRecursive" />
   </component>
 </project>

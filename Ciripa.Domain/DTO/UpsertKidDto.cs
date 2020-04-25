@@ -9,8 +9,8 @@ namespace Ciripa.Domain.DTO
         public string LastName { get; set; }
         public string FiscalCode { get; set; }
         public DateTime Birthdate { get; set; }
-        public Date? From { get; set; }
-        public Date? To { get; set; }
+        public DateTime From { get; set; }
+        public DateTime? To { get; set; }
         public string Notes { get; set; }
         
         //Billing data

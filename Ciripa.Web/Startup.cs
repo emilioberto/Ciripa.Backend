@@ -44,17 +44,16 @@ namespace Ciripa.Web
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Ciripà API", Version = "v1.0"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ciripà API", Version = "v1.0" });
             });
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddNewtonsoftJson(options =>
-                    {
-                        options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
-                        options.SerializerSettings.Converters.Add(new DateConverter());
-                        options.SerializerSettings.Converters.Add(new NullableDateConverter());
-                    });
+                .AddNewtonsoftJson(opts =>
+                {
+                    opts.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                    opts.SerializerSettings.Converters.Add(new DateConverter());
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

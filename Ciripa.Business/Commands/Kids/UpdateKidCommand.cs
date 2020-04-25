@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Ciripa.Data;
 using Ciripa.Data.Entities;
+using Ciripa.Domain;
 using Ciripa.Domain.DTO;
 using MediatR;
 
@@ -15,6 +16,11 @@ namespace Ciripa.Business.Commands
 
         public UpdateKidCommand(int id, UpsertKidDto model)
         {
+            model.From = new Date(model.From).AsDateTime();
+            if (model.To != null)
+            {
+                model.To = new Date(model.To.Value).AsDateTime();
+            }
             Id = id;
             Model = model;
         }

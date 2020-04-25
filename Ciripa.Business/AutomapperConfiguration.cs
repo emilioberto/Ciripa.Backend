@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Ciripa.Data.Entities;
+using Ciripa.Domain;
 using Ciripa.Domain.DTO;
+using System;
 
 namespace Ciripa.Business
 {
@@ -26,6 +28,12 @@ namespace Ciripa.Business
             
             CreateMap<Settings, SettingsDto>()
                 .ReverseMap();
+
+            CreateMap<Date, DateTime>()
+                .ConvertUsing(e => (DateTime)e);
+
+            CreateMap<DateTime, Date>()
+                .ConvertUsing(e => (Date)e);
         }
 
         private double CalculateMorningHours(Presence presence)

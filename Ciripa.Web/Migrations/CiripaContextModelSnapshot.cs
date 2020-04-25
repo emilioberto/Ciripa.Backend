@@ -46,7 +46,7 @@ namespace Ciripa.Web.Migrations
                     b.Property<string>("FiscalCode")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("From")
+                    b.Property<DateTime>("From")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastName")

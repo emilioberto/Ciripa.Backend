@@ -17,7 +17,7 @@ namespace Ciripa.Web.Migrations
                     LastName = table.Column<string>(nullable: true),
                     FiscalCode = table.Column<string>(nullable: true),
                     Birthdate = table.Column<DateTime>(nullable: false),
-                    From = table.Column<DateTime>(nullable: true),
+                    From = table.Column<DateTime>(nullable: false),
                     To = table.Column<DateTime>(nullable: true),
                     ContractType = table.Column<int>(nullable: false),
                     ContractValue = table.Column<decimal>(nullable: false),
