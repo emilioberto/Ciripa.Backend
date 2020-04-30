@@ -13,35 +13,40 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ciripa.Business.Queries.Presences
 {
-    public class GetInvoicesByDateQuery : IRequest<List<InvoiceDto>>
+    public class GetMonthlyInvoicesByDateQuery : IRequest<List<InvoiceDto>>
     {
         public Date Date { get; private set; }
 
-        public GetInvoicesByDateQuery(Date date)
+        public GetMonthlyInvoicesByDateQuery(Date date)
         {
             Date = date;
         }
     }
 
-    public class GetInvoicesByDateQueryHandler : IRequestHandler<GetInvoicesByDateQuery, List<InvoiceDto>>
+    public class GetMonthlyInvoicesByDateQueryHandler : IRequestHandler<GetMonthlyInvoicesByDateQuery, List<InvoiceDto>>
     {
         private readonly CiripaContext _context;
         private readonly IMapper _mapper;
 
-        public GetInvoicesByDateQueryHandler(CiripaContext context, IMapper mapper)
+        public GetMonthlyInvoicesByDateQueryHandler(CiripaContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<List<InvoiceDto>> Handle(GetInvoicesByDateQuery request, CancellationToken ct)
+        public async Task<List<InvoiceDto>> Handle(GetMonthlyInvoicesByDateQuery request, CancellationToken ct)
         {
             var result = await _context
                 .Set<Invoice>()
-                .Where(x => x.Date == request.Date)
+                .OrderBy(x => x.Date)
                 .ProjectTo<InvoiceDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(ct);
-            return result;
+
+            var extistingInvoices = result
+                .Where(x => x.Date.Year == request.Date.Year && x.Date.Month == request.Date.Month)
+                .ToList();
+
+            return extistingInvoices;
         }
     }
 }

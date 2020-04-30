@@ -19,7 +19,7 @@ namespace Ciripa.Business.Commands
 
         public CreateMissingInvoicesCommand(Date date)
         {
-            Date = date;
+            Date = new Date(date.Year, date.Month, 1);
         }
     }
 
@@ -39,7 +39,7 @@ namespace Ciripa.Business.Commands
         public async Task<List<InvoiceDto>> Handle(CreateMissingInvoicesCommand request, CancellationToken ct)
         {
             var kids = await _mediator.Send(new GetKidsByDateQuery(request.Date), ct);
-            var invoices = await _mediator.Send(new GetInvoicesByDateQuery(request.Date), ct);
+            var invoices = await _mediator.Send(new GetMonthlyInvoicesByDateQuery(request.Date), ct);
 
             invoices.ForEach(async invoice =>
             {
@@ -74,7 +74,7 @@ namespace Ciripa.Business.Commands
 
             await _context.SaveChangesAsync(ct);
 
-            return await _mediator.Send(new GetInvoicesByDateQuery(request.Date), ct);
+            return await _mediator.Send(new GetMonthlyInvoicesByDateQuery(request.Date), ct);
         }
     }
 }
