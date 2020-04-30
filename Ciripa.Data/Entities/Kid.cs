@@ -15,7 +15,7 @@ namespace Ciripa.Data.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string FiscalCode { get; set; }
-        public DateTime Birthdate { get; set; }
+        public DateTime? Birthdate { get; set; }
         public DateTime From { get; set; }
         public DateTime? To { get; set; }
         public ContractType ContractType { get; set; }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ciripa.Web.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,7 +16,7 @@ namespace Ciripa.Web.Migrations
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     FiscalCode = table.Column<string>(nullable: true),
-                    Birthdate = table.Column<DateTime>(nullable: false),
+                    Birthdate = table.Column<DateTime>(nullable: true),
                     From = table.Column<DateTime>(nullable: false),
                     To = table.Column<DateTime>(nullable: true),
                     ContractType = table.Column<int>(nullable: false),

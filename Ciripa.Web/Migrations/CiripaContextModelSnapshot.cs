@@ -25,7 +25,7 @@ namespace Ciripa.Web.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Birthdate")
+                    b.Property<DateTime?>("Birthdate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Cap")
