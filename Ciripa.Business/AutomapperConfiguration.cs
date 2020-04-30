@@ -10,6 +10,13 @@ namespace Ciripa.Business
     {
         public AutomapperConfiguration()
         {
+
+            CreateMap<Date, DateTime>()
+                .ConvertUsing(e => (DateTime)e);
+
+            CreateMap<DateTime, Date>()
+                .ConvertUsing(e => (Date)e);
+
             CreateMap<Kid, KidDto>()
                 .ReverseMap();
             
@@ -29,11 +36,10 @@ namespace Ciripa.Business
             CreateMap<Settings, SettingsDto>()
                 .ReverseMap();
 
-            CreateMap<Date, DateTime>()
-                .ConvertUsing(e => (DateTime)e);
+            CreateMap<Invoice, InvoiceDto>();
 
-            CreateMap<DateTime, Date>()
-                .ConvertUsing(e => (Date)e);
+            CreateMap<InvoiceDto, Invoice>()
+                .ForMember(x => x.Kid, opt => opt.Ignore());
         }
 
         private double CalculateMorningHours(Presence presence)

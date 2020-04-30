@@ -89,6 +89,7 @@ namespace Ciripa.Web
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
+
                 Console.WriteLine("Migrating database");
                 var context = serviceScope.ServiceProvider.GetRequiredService<CiripaContext>();
                 context.Database.Migrate();

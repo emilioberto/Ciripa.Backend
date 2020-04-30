@@ -29,6 +29,7 @@ namespace Ciripa.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new DateConfiguration<Presence>());
+            modelBuilder.ApplyConfiguration(new DateConfiguration<Invoice>());
 
             modelBuilder
                 .Entity<Kid>()
@@ -42,6 +43,10 @@ namespace Ciripa.Data
             modelBuilder
                 .Entity<Settings>()
                 .HasData(settingsSeedData);
+
+            modelBuilder
+                .Entity<Invoice>()
+                .HasOne(x => x.Kid);
         }
         
     }

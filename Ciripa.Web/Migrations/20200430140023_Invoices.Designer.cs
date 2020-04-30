@@ -3,14 +3,16 @@ using System;
 using Ciripa.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Ciripa.Web.Migrations
 {
     [DbContext(typeof(CiripaContext))]
-    partial class CiripaContextModelSnapshot : ModelSnapshot
+    [Migration("20200430140023_Invoices")]
+    partial class Invoices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,9 +28,6 @@ namespace Ciripa.Web.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal?>("InvoiceAmount")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("KidId")

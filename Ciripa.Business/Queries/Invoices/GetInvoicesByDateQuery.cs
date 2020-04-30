@@ -13,33 +13,33 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ciripa.Business.Queries.Presences
 {
-    public class GetPresencesByDateQuery : IRequest<List<PresenceDto>>
+    public class GetInvoicesByDateQuery : IRequest<List<InvoiceDto>>
     {
         public Date Date { get; private set; }
 
-        public GetPresencesByDateQuery(Date date)
+        public GetInvoicesByDateQuery(Date date)
         {
             Date = date;
         }
     }
 
-    public class GetPresencesByDateQueryHandler : IRequestHandler<GetPresencesByDateQuery, List<PresenceDto>>
+    public class GetInvoicesByDateQueryHandler : IRequestHandler<GetInvoicesByDateQuery, List<InvoiceDto>>
     {
         private readonly CiripaContext _context;
         private readonly IMapper _mapper;
 
-        public GetPresencesByDateQueryHandler(CiripaContext context, IMapper mapper)
+        public GetInvoicesByDateQueryHandler(CiripaContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<List<PresenceDto>> Handle(GetPresencesByDateQuery request, CancellationToken ct)
+        public async Task<List<InvoiceDto>> Handle(GetInvoicesByDateQuery request, CancellationToken ct)
         {
             var result = await _context
-                .Set<Presence>()
+                .Set<Invoice>()
                 .Where(x => x.Date == request.Date)
-                .ProjectTo<PresenceDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<InvoiceDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(ct);
             return result;
         }
