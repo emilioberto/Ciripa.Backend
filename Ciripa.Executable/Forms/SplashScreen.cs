@@ -7,8 +7,8 @@ namespace Ciripa.Executable.Forms
 {
     public partial class SplashScreen : Form
     {
-        private const int DefaultWidth = 593;
-        private const int DefaultHeight = 361;
+        private const int DefaultWidth = 550;
+        private const int DefaultHeight = 600;
 
         public SplashScreen()
         {
