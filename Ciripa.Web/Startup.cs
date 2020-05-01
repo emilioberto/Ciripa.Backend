@@ -47,12 +47,16 @@ namespace Ciripa.Web
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ciripà API", Version = "v1.0" });
             });
 
-            services.AddMvc()
+            services.AddMvcCore()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddNewtonsoftJson(opts =>
                 {
                     opts.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                     opts.SerializerSettings.Converters.Add(new DateConverter());
+                })
+                .AddMvcOptions(opts =>
+                {
+                    opts.EnableEndpointRouting = false;
                 });
         }
 
@@ -75,6 +79,12 @@ namespace Ciripa.Web
             }
 
             app.UseCors();
+
+            app.UseDefaultFiles();
+
+            app.UseStaticFiles();
+
+            app.UseMvc();
 
             // app.UseHttpsRedirection();
 

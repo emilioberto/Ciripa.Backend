@@ -1,0 +1,82 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <Configurations>Debug;Release;</Configurations>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+    <OutputType>WinExe</OutputType>
+	<TargetName>Ciripa</TargetName>
+    <StartupObject />
+  </PropertyGroup>
+    
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x86</PlatformTarget>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugOn|AnyCPU'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DefineConstants>TRACE;PUBLISH;DEBUGON;NETFRAMEWORK;NET461</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugOff|AnyCPU'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DefineConstants>TRACE;PUBLISH;DEBUGOFF;NETFRAMEWORK;NET461</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets.zip" />
+    <None Remove="Resources\Assets.zip" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Assets.zip" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Forms\SplashScreen.Logo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\SplashScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <!--Create Resources directory-->
+    <Exec Command="if not exist $(ProjectDir)\Resources mkdir $(ProjectDir)\Resources" />
+    <!--Public Ciripa.Web-->
+    <Exec Command="dotnet publish $(ProjectDir)\..\Ciripa.Web -c $(ConfigurationName) -o  $(ProjectDir)\.tmp\Backend&#xD;&#xA;" />
+    <Exec Command="$(ProjectDir)\PublishingTools\editbin.exe /subsystem:windows $(ProjectDir)\.tmp\Backend\Ciripa.Web.exe&#xD;&#xA;" />
+    <!--Build Angular application and copy dist\company-project folder to temporary Backend\wwwroot-->
+    <Exec Command="call npm --prefix $(ProjectDir)\..\..\..\Ciripa.Frontend run build&#xD;&#xA;" />
+    <Exec Command="xcopy $(ProjectDir)\..\..\..\Ciripa.Frontend\dist\ciripa $(ProjectDir)\.tmp\Backend\wwwroot /e /i /h&#xD;&#xA;" />
+    <!--Pack Electron app (windows) and copy executable ciripa-win-32-x64 Electron to temporary Electron folder-->
+    <Exec Command="call npm run pack-win --prefix $(ProjectDir)\..\..\..\Ciripa.Electron&#xD;&#xA;" />
+    <Exec Command="xcopy $(ProjectDir)\..\..\..\Ciripa.Electron\dist\win\ciripa-win32-x64 $(ProjectDir)\.tmp\Electron /e /i /h&#xD;&#xA;" />
+    <!--Remove Assets.zip from Resources-->
+    <Exec Command="del $(ProjectDir)\Resources\Assets.zip&#xD;&#xA;" />
+    <!--Generate Assets.zip (Backend + Electron)--> 
+    <Exec Command="call powershell.exe -nologo -noprofile -command &quot;&amp; { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('$(ProjectDir)\.tmp', '$(ProjectDir)\Resources\Assets.zip'); }&quot;&#xD;&#xA;" />
+    <!--Remove temporary directory-->
+    <Exec Command="RMDIR &quot;$(ProjectDir)\.tmp&quot; /S /Q&#xD;&#xA;" />
+  </Target>
+
+</Project>
