@@ -28,6 +28,9 @@ namespace Ciripa.Web.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
+                    b.Property<decimal?>("Hours")
+                        .HasColumnType("TEXT");
+
                     b.Property<decimal?>("InvoiceAmount")
                         .HasColumnType("TEXT");
 

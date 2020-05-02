@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ciripa.Web.Migrations
 {
-    public partial class Init : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,6 +54,32 @@ namespace Ciripa.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Invoice",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    KidId = table.Column<int>(nullable: false),
+                    Number = table.Column<string>(nullable: true),
+                    Date = table.Column<DateTime>(nullable: false),
+                    Amount = table.Column<decimal>(nullable: true),
+                    Hours = table.Column<decimal>(nullable: true),
+                    InvoiceAmount = table.Column<decimal>(nullable: true),
+                    PaymentMethod = table.Column<int>(nullable: true),
+                    PaymentDate = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invoice", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Invoice_Kids_KidId",
+                        column: x => x.KidId,
+                        principalTable: "Kids",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Presences",
                 columns: table => new
                 {
@@ -83,6 +109,11 @@ namespace Ciripa.Web.Migrations
                 values: new object[] { 1, 7.0m, 6.0m, 200.0m });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Invoice_KidId",
+                table: "Invoice",
+                column: "KidId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Presences_KidId",
                 table: "Presences",
                 column: "KidId");
@@ -90,6 +121,9 @@ namespace Ciripa.Web.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Invoice");
+
             migrationBuilder.DropTable(
                 name: "Presences");
 

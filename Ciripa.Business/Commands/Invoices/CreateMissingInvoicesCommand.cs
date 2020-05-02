@@ -58,11 +58,11 @@ namespace Ciripa.Business.Commands
                     var presencesSummary = await _mediator.Send(new GetMonthlyPresencesByKidQuery(kid.Id, request.Date));
                     if (presencesSummary?.TotalAmount != null)
                     {
-                        missingInvoices.Add(new Invoice(kid.Id, request.Date, presencesSummary.TotalAmount));
+                        missingInvoices.Add(new Invoice(kid.Id, request.Date, presencesSummary.TotalAmount, presencesSummary.TotalHours));
                     }
                     else
                     {
-                        missingInvoices.Add(new Invoice(kid.Id, request.Date, 0));
+                        missingInvoices.Add(new Invoice(kid.Id, request.Date, 0, presencesSummary.TotalHours));
                     }
                 }
             });

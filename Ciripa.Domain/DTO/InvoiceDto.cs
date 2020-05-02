@@ -12,6 +12,7 @@ namespace Ciripa.Domain.DTO
         public string Number { get; set; }
         public Date Date { get; set; }
         public decimal? Amount { get; set; }
+        public decimal? Hours { get; set; }
         public decimal? InvoiceAmount { get; set; }
         public PaymentMethod? PaymentMethod { get; set; }
         public DateTime? PaymentDate { get; set; }

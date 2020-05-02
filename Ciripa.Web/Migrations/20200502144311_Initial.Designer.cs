@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ciripa.Web.Migrations
 {
     [DbContext(typeof(CiripaContext))]
-    [Migration("20200430141800_InvoiceAmount")]
-    partial class InvoiceAmount
+    [Migration("20200502144311_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,6 +28,9 @@ namespace Ciripa.Web.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("Hours")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal?>("InvoiceAmount")
