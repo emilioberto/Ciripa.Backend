@@ -4,3 +4,4 @@ obj/
 Ciripa.Executable/Resources/Assets.zip
 Ciripa.Executable/Publish.zip
 Ciripa.Executable/Publish/*
+Ciripa.Executable/.tmp/Backend/*
