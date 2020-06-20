@@ -32,15 +32,20 @@ namespace Ciripa.Business.Queries.Presences
     {
         private readonly CiripaContext _context;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public GetKidPresencesByDateQueryHandler(CiripaContext context, IMapper mapper)
+        public GetKidPresencesByDateQueryHandler(CiripaContext context, IMapper mapper, IMediator mediator)
         {
             _context = context;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         public async Task<PresencesSummaryDto> Handle(GetMonthlyPresencesByKidQuery request, CancellationToken ct)
         {
+            var kid = await _mediator.Send(new GetKidQuery(request.KidId));
+            var settings = await _context.Set<Settings>().FirstAsync(ct);
+
             var result = await _context
                 .Set<Presence>()
                 .Where(x => x.KidId == request.KidId)
@@ -50,13 +55,13 @@ namespace Ciripa.Business.Queries.Presences
             var existingPresences = result
                 .Where(x => x.Date.Year == request.Date.Year && x.Date.Month == request.Date.Month)
                 .ToList();
-            
+
             var daysInMonth = Enumerable.Range(1, DateTime.DaysInMonth(request.Date.Year, request.Date.Month))
                 .Select(day => new Date(request.Date.Year, request.Date.Month, day))
                 .ToList();
 
             var presenceList = new List<Presence>();
-            
+
             daysInMonth.ForEach(day =>
             {
                 var dailyPresence = existingPresences.SingleOrDefault(x => x.Date == day);
@@ -65,21 +70,104 @@ namespace Ciripa.Business.Queries.Presences
 
             var presences = _mapper.Map<List<PresenceListItemDto>>(presenceList);
 
-            var settings = await _context.Set<Settings>().FirstAsync(ct);
-
             var totalHours = CalculateTotalHours(presences);
-            var totalAmount = totalHours * settings.HourCost;
-            
-            return new PresencesSummaryDto(presences, totalHours, totalAmount);
- 
+            var totalExtraServiceTimeHours = 0m;
+            var totalExtraContractHours = 0m;
+
+            if (!kid.Contract.MonthlyContract)
+            {
+                var exceedingDays = presences.Where(x => x.DailyHours > kid.Contract.DailyHours).ToList();
+                exceedingDays.ForEach(exceedingPresence =>
+                {
+                    if (exceedingPresence.Id == 0)
+                    {
+                        return;
+                    }
+
+                    var exceedingContractHours = exceedingPresence.DailyHours - kid.Contract.DailyHours;
+
+                    var exceedingMorningServiceTimeHours = CalculateExceedingMorningServiceTime(exceedingPresence, kid.Contract);
+                    var exceedingEveningServiceTimeHours = CalculateExceedingEveningServiceTime(exceedingPresence, kid.Contract);
+                    var totalExceedingServiceTimeHours = exceedingMorningServiceTimeHours + exceedingEveningServiceTimeHours;
+                    totalExtraServiceTimeHours += totalExceedingServiceTimeHours;
+                    totalExtraContractHours += (exceedingContractHours - totalExceedingServiceTimeHours);
+
+                    presences.Single(x => x.Id == exceedingPresence.Id).ExtraServiceTimeHours = totalExceedingServiceTimeHours;
+                    presences.Single(x => x.Id == exceedingPresence.Id).ExtraContractHours = (exceedingContractHours - totalExceedingServiceTimeHours);
+                });
+            }
+            else
+            {
+                var exceedingMonthlyContractHours = Math.Max((totalHours - kid.Contract.MonthlyHours), 0);
+
+                presences.ForEach(presence =>
+                {
+                    if (presence.Id == 0)
+                    {
+                        return;
+                    }
+
+                    var exceedingMorningServiceTimeHours = CalculateExceedingMorningServiceTime(presence, kid.Contract);
+                    var exceedingEveningServiceTimeHours = CalculateExceedingEveningServiceTime(presence, kid.Contract);
+                    var totalExceedingServiceTimeHours = exceedingMorningServiceTimeHours + exceedingEveningServiceTimeHours;
+                    totalExtraServiceTimeHours += totalExceedingServiceTimeHours;
+
+                    presences.Single(x => x.Id == presence.Id).ExtraServiceTimeHours = totalExceedingServiceTimeHours;
+                });
+
+                if (exceedingMonthlyContractHours > 0)
+                {
+                    totalExtraContractHours += exceedingMonthlyContractHours - totalExtraServiceTimeHours;
+                }
+
+                presences.Last(x => IsNotWeekend(x.Date.AsDateTime())).ExtraContractHours = totalExtraContractHours;
+            }
+
+
+            var totalAmount = kid.Contract.MinContractValue + (totalExtraContractHours * kid.Contract.HourCost) + (totalExtraServiceTimeHours * kid.Contract.ExtraHourCost);
+
+            return new PresencesSummaryDto(presences, totalHours, totalExtraContractHours, totalExtraServiceTimeHours, totalAmount);
+        }
+
+        private bool IsNotWeekend(DateTime date)
+        {
+            return date.DayOfWeek != DayOfWeek.Saturday && date.DayOfWeek != DayOfWeek.Sunday;
+        }
+
+        private decimal CalculateExceedingMorningServiceTime(PresenceListItemDto presence, Contract contract)
+        {
+            if (presence.MorningEntry.HasValue && contract.StartTime > presence.MorningEntry)
+            {
+                var morningTime = GetTimeWithMinDate(presence.MorningEntry.Value);
+                var startTime = GetTimeWithMinDate(contract.StartTime.Value);
+                var totalHours = (morningTime - startTime).TotalHours;
+                return Math.Round(Convert.ToDecimal(totalHours) * 2.0m, MidpointRounding.AwayFromZero) / 2.0m;
+            }
+            return 0m;
+        }
+
+        private decimal CalculateExceedingEveningServiceTime(PresenceListItemDto presence, Contract contract)
+        {
+            if (presence.MorningEntry.HasValue && contract.EndTime < presence.EveningExit)
+            {
+                var endTime = GetTimeWithMinDate(contract.EndTime.Value);
+                var eveningTime = GetTimeWithMinDate(presence.EveningExit.Value);
+                var totalHours = ( endTime - eveningTime).TotalHours;
+                return Math.Round(Convert.ToDecimal(totalHours) * 2.0m, MidpointRounding.AwayFromZero) / 2.0m;
+            }
+            return 0m;
+        }
+
+        private DateTime GetTimeWithMinDate(DateTime value)
+        {
+            var mindate = default(DateTime);
+            return new DateTime(mindate.Year, mindate.Month, mindate.Day, value.Hour, value.Minute, 0);
         }
 
         private decimal CalculateTotalHours(List<PresenceListItemDto> presences)
         {
-            var morningHours = presences.Sum(x => x.MorningHours);
-            var eveningHours = presences.Sum(x => x.EveningHours);
-            var total = morningHours + eveningHours;
-            return Convert.ToDecimal(total);
+            var dainlyHoursSum = presences.Sum(x => x.DailyHours);
+            return Convert.ToDecimal(dainlyHoursSum);
         }
     }
 }

@@ -11,31 +11,28 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ciripa.Business.Queries
 {
-    public class GetKidsListQuery : IRequest<List<KidDto>>
+    public class GetContractsListQuery : IRequest<List<ContractDto>>
     {
-        public GetKidsListQuery()
+        public GetContractsListQuery()
         {
         }
     }
 
-    public class GetKidsListQueryHandler : IRequestHandler<GetKidsListQuery, List<KidDto>>
+    public class GetContractsListQueryHandler : IRequestHandler<GetContractsListQuery, List<ContractDto>>
     {
         private readonly CiripaContext _context;
         private readonly IMapper _mapper;
 
-        public GetKidsListQueryHandler(CiripaContext context, IMapper mapper)
+        public GetContractsListQueryHandler(CiripaContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public Task<List<KidDto>> Handle(GetKidsListQuery request, CancellationToken ct)
+        public Task<List<ContractDto>> Handle(GetContractsListQuery request, CancellationToken ct)
         {
-            return _context.Set<Kid>()
-                .Include(x => x.Parent1)
-                .Include(x => x.Parent2)
-                .AsNoTracking()
-                .ProjectTo<KidDto>(_mapper.ConfigurationProvider)
+            return _context.Set<Contract>()
+                .ProjectTo<ContractDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(ct);
         }
     }

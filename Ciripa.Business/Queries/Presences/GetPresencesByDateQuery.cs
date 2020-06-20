@@ -39,6 +39,7 @@ namespace Ciripa.Business.Queries.Presences
             var result = await _context
                 .Set<Presence>()
                 .Where(x => x.Date == request.Date)
+                .AsNoTracking()
                 .ProjectTo<PresenceDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(ct);
             return result;

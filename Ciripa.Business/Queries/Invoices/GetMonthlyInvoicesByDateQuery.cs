@@ -39,6 +39,7 @@ namespace Ciripa.Business.Queries.Presences
             var result = await _context
                 .Set<Invoice>()
                 .OrderBy(x => x.Date)
+                .AsNoTracking()
                 .ProjectTo<InvoiceDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(ct);
 

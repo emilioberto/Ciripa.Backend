@@ -1,7 +1,5 @@
 ﻿using Ciripa.Data.Entities;
-using Ciripa.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Ciripa.Data
 {
@@ -10,6 +8,7 @@ namespace Ciripa.Data
         public DbSet<Kid> Kids { get; set; }
         public DbSet<Presence> Presences { get; set; }
         public DbSet<Settings> Settings { get; set; }
+        public DbSet<Contract> Contracts { get; set; }
 
         public CiripaContext()
         {
@@ -34,6 +33,12 @@ namespace Ciripa.Data
             modelBuilder
                 .Entity<Kid>()
                 .HasMany(x => x.PresencesList);
+            modelBuilder
+                .Entity<Kid>()
+                .OwnsOne(x => x.Parent1);
+            modelBuilder
+                .Entity<Kid>()
+                .OwnsOne(x => x.Parent2);
 
             modelBuilder
                 .Entity<Presence>()
@@ -47,6 +52,9 @@ namespace Ciripa.Data
             modelBuilder
                 .Entity<Invoice>()
                 .HasOne(x => x.Kid);
+
+            modelBuilder
+                .Entity<Contract>();
         }
         
     }

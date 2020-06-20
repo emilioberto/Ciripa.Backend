@@ -38,6 +38,9 @@ namespace Ciripa.Business.Queries
         {
             var kids = await _context
                 .Set<Kid>()
+                .Include(x => x.Parent1)
+                .Include(x => x.Parent2)
+                .AsNoTracking()
                 .ProjectTo<KidDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(ct);
 

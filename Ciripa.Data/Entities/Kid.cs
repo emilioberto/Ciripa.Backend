@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ciripa.Data.Interfaces;
-using Ciripa.Domain;
 
 namespace Ciripa.Data.Entities
 {
@@ -18,22 +17,15 @@ namespace Ciripa.Data.Entities
         public DateTime? Birthdate { get; set; }
         public DateTime From { get; set; }
         public DateTime? To { get; set; }
-        public ContractType ContractType { get; set; }
-        public decimal ContractValue { get; set; }
+        public int ContractId { get; set; }
+        public Contract Contract { get; set; }
         public string Notes { get; set; }
-        public bool SubscriptionPaid { get; set; }
-
+        public DateTime? SubscriptionPaidDate { get; set; }
         public decimal SubscriptionAmount { get; set; }
-
-        //Billing data
-        public string ParentFirstName { get; set; }
-        public string ParentLastName { get; set; }
-        public string ParentFiscalCode { get; set; }
-        public string Address { get; set; }
-        public string City { get; set; }
-        public string Cap { get; set; }
-        public string Province { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
+        public bool ExtraServicesEnabled { get; set; }
         public ICollection<Presence> PresencesList { get; set; }
+        public Parent Parent1 { get; set; }
+        public Parent Parent2 { get; set; }
     }
 }

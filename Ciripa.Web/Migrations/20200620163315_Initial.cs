@@ -8,34 +8,24 @@ namespace Ciripa.Web.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Kids",
+                name: "Contracts",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true),
-                    FiscalCode = table.Column<string>(nullable: true),
-                    Birthdate = table.Column<DateTime>(nullable: true),
-                    From = table.Column<DateTime>(nullable: false),
-                    To = table.Column<DateTime>(nullable: true),
-                    ContractType = table.Column<int>(nullable: false),
-                    ContractValue = table.Column<decimal>(nullable: false),
-                    Notes = table.Column<string>(nullable: true),
-                    SubscriptionPaid = table.Column<bool>(nullable: false),
-                    SubscriptionAmount = table.Column<decimal>(nullable: false),
-                    ParentFirstName = table.Column<string>(nullable: true),
-                    ParentLastName = table.Column<string>(nullable: true),
-                    ParentFiscalCode = table.Column<string>(nullable: true),
-                    Address = table.Column<string>(nullable: true),
-                    City = table.Column<string>(nullable: true),
-                    Cap = table.Column<string>(nullable: true),
-                    Province = table.Column<string>(nullable: true),
-                    PaymentMethod = table.Column<int>(nullable: false)
+                    Description = table.Column<string>(nullable: true),
+                    MonthlyContract = table.Column<bool>(nullable: false),
+                    DailyHours = table.Column<decimal>(nullable: false),
+                    MonthlyHours = table.Column<decimal>(nullable: false),
+                    HourCost = table.Column<decimal>(nullable: false),
+                    ExtraHourCost = table.Column<decimal>(nullable: false),
+                    StartTime = table.Column<DateTime>(nullable: true),
+                    EndTime = table.Column<DateTime>(nullable: true),
+                    MinContractValue = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Kids", x => x.Id);
+                    table.PrimaryKey("PK_Contracts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -51,6 +41,58 @@ namespace Ciripa.Web.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Settings", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Kids",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    FiscalCode = table.Column<string>(nullable: true),
+                    Birthdate = table.Column<DateTime>(nullable: true),
+                    From = table.Column<DateTime>(nullable: false),
+                    To = table.Column<DateTime>(nullable: true),
+                    ContractId = table.Column<int>(nullable: false),
+                    Notes = table.Column<string>(nullable: true),
+                    SubscriptionPaidDate = table.Column<DateTime>(nullable: true),
+                    SubscriptionAmount = table.Column<decimal>(nullable: false),
+                    PaymentMethod = table.Column<int>(nullable: false),
+                    ExtraServicesEnabled = table.Column<bool>(nullable: false),
+                    Parent1_Id = table.Column<int>(nullable: true),
+                    Parent1_FirstName = table.Column<string>(nullable: true),
+                    Parent1_LastName = table.Column<string>(nullable: true),
+                    Parent1_FiscalCode = table.Column<string>(nullable: true),
+                    Parent1_Phone = table.Column<string>(nullable: true),
+                    Parent1_Email = table.Column<string>(nullable: true),
+                    Parent1_Address = table.Column<string>(nullable: true),
+                    Parent1_City = table.Column<string>(nullable: true),
+                    Parent1_Cap = table.Column<string>(nullable: true),
+                    Parent1_Province = table.Column<string>(nullable: true),
+                    Parent1_Billing = table.Column<bool>(nullable: true),
+                    Parent2_Id = table.Column<int>(nullable: true),
+                    Parent2_FirstName = table.Column<string>(nullable: true),
+                    Parent2_LastName = table.Column<string>(nullable: true),
+                    Parent2_FiscalCode = table.Column<string>(nullable: true),
+                    Parent2_Phone = table.Column<string>(nullable: true),
+                    Parent2_Email = table.Column<string>(nullable: true),
+                    Parent2_Address = table.Column<string>(nullable: true),
+                    Parent2_City = table.Column<string>(nullable: true),
+                    Parent2_Cap = table.Column<string>(nullable: true),
+                    Parent2_Province = table.Column<string>(nullable: true),
+                    Parent2_Billing = table.Column<bool>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Kids", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Kids_Contracts_ContractId",
+                        column: x => x.ContractId,
+                        principalTable: "Contracts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -114,6 +156,11 @@ namespace Ciripa.Web.Migrations
                 column: "KidId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Kids_ContractId",
+                table: "Kids",
+                column: "ContractId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Presences_KidId",
                 table: "Presences",
                 column: "KidId");
@@ -132,6 +179,9 @@ namespace Ciripa.Web.Migrations
 
             migrationBuilder.DropTable(
                 name: "Kids");
+
+            migrationBuilder.DropTable(
+                name: "Contracts");
         }
     }
 }

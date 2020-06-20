@@ -31,6 +31,7 @@ namespace Ciripa.Business
             CreateMap<Presence, PresenceListItemDto>()
                 .ForMember(x => x.MorningHours, opt => opt.MapFrom(x => CalculateMorningHours(x)))
                 .ForMember(x => x.EveningHours, opt => opt.MapFrom(x => CalculateEveningHours(x)))
+                .ForMember(x => x.DailyHours, opt => opt.MapFrom(x => CalculateDailyHours(x)))
                 .ReverseMap();
             
             CreateMap<Settings, SettingsDto>()
@@ -40,26 +41,41 @@ namespace Ciripa.Business
 
             CreateMap<InvoiceDto, Invoice>()
                 .ForMember(x => x.Kid, opt => opt.Ignore());
+
+            CreateMap<Contract, ContractDto>()
+                .ReverseMap();
+
+            CreateMap<Parent, ParentDto>()
+                .ReverseMap();
         }
 
-        private double CalculateMorningHours(Presence presence)
+        private decimal CalculateMorningHours(Presence presence)
         {
             if (presence.MorningEntry == null || presence.MorningExit == null)
             {
                 return 0;
             }
 
-            return (presence.MorningExit.Value - presence.MorningEntry.Value).TotalHours;
+            var totalHours = (presence.MorningExit.Value - presence.MorningEntry.Value).TotalHours;
+            var result = Math.Round(Convert.ToDecimal(totalHours) * 2.0m, MidpointRounding.AwayFromZero) / 2.0m;
+            return result;
         }
         
-        private double CalculateEveningHours(Presence presence)
+        private decimal CalculateEveningHours(Presence presence)
         {
             if (presence.EveningEntry == null || presence.EveningExit == null)
             {
                 return 0;
             }
 
-            return (presence.EveningExit.Value - presence.EveningEntry.Value).TotalHours;
+            var totalHours = (presence.EveningExit.Value - presence.EveningEntry.Value).TotalHours;
+            var result = Math.Round(Convert.ToDecimal(totalHours) * 2.0m, MidpointRounding.AwayFromZero) / 2.0m;
+            return result;
+        }
+
+        private decimal CalculateDailyHours(Presence presence)
+        {
+            return CalculateMorningHours(presence) + CalculateEveningHours(presence);
         }
     }
 }
