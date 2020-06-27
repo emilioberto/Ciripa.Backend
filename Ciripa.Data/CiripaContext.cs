@@ -66,6 +66,9 @@ namespace Ciripa.Data
             modelBuilder
                 .Entity<Invoice>()
                 .HasOne(x => x.Kid);
+            modelBuilder
+                .Entity<Invoice>()
+                .OwnsOne(x => x.BillingParent);
 
             modelBuilder.Entity<Contract>()
                 .HasDiscriminator<int>("ContractType")

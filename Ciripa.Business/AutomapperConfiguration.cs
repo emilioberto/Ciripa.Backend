@@ -19,7 +19,7 @@ namespace Ciripa.Business
 
             CreateMap<Kid, KidDto>()
                 .ReverseMap();
-            
+
             CreateMap<Kid, UpsertKidDto>()
                 .ReverseMap();
 
@@ -27,7 +27,7 @@ namespace Ciripa.Business
 
             CreateMap<PresenceDto, Presence>()
                 .ForMember(x => x.Kid, opt => opt.Ignore());
-            
+
             CreateMap<Presence, PresenceListItemDto>()
                 .ForMember(x => x.MorningHours, opt => opt.MapFrom(x => CalculateMorningHours(x)))
                 .ForMember(x => x.EveningHours, opt => opt.MapFrom(x => CalculateEveningHours(x)))
@@ -48,10 +48,12 @@ namespace Ciripa.Business
             CreateMap<Settings, SettingsDto>()
                 .ReverseMap();
 
-            CreateMap<Invoice, InvoiceDto>();
+            CreateMap<Invoice, InvoiceDto>()
+                .ForMember(x => x.BillingParent, opt => opt.MapFrom(x => (!x.Kid.Parent1.Billing && x.Kid.Parent2 != null && x.Kid.Parent2.Billing) ? x.Kid.Parent2 : x.Kid.Parent1));
 
             CreateMap<InvoiceDto, Invoice>()
-                .ForMember(x => x.Kid, opt => opt.Ignore());
+                .ForMember(x => x.Kid, opt => opt.Ignore())
+                .ForMember(x => x.BillingParent, opt => opt.Ignore());
 
             CreateMap<SimpleContract, ContractDto>()
                 .ReverseMap();
@@ -61,6 +63,20 @@ namespace Ciripa.Business
 
             CreateMap<SpecialContract, SpecialContractDto>()
                 .ReverseMap();
+        }
+
+        private static Parent GetBillingParent(Kid kid)
+        {
+            if (kid.Parent1.Billing)
+            {
+                return kid.Parent1;
+            } else if (kid.Parent2.Billing)
+            {
+                return kid.Parent2;
+            } else
+            {
+                return kid.Parent1;
+            }
         }
 
         private decimal CalculateMorningHours(Presence presence)
@@ -74,7 +90,7 @@ namespace Ciripa.Business
             var result = Math.Ceiling(Convert.ToDecimal(totalHours) * 2.0m) / 2.0m;
             return result;
         }
-        
+
         private decimal CalculateEveningHours(Presence presence)
         {
             if (presence.EveningEntry == null || presence.EveningExit == null)

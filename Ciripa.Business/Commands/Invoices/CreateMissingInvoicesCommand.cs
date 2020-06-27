@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Ciripa.Business.Queries;
+using Ciripa.Business.Queries.ExtraPresences;
 using Ciripa.Business.Queries.Presences;
 using Ciripa.Data;
 using Ciripa.Data.Entities;
 using Ciripa.Domain;
 using Ciripa.Domain.DTO;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ciripa.Business.Commands
 {
@@ -38,15 +41,22 @@ namespace Ciripa.Business.Commands
 
         public async Task<List<InvoiceDto>> Handle(CreateMissingInvoicesCommand request, CancellationToken ct)
         {
-            var kids = await _mediator.Send(new GetKidsByDateQuery(request.Date), ct);
+            var lastDayOfMonth = GetLastDayOfMonth(request.Date);
+            var kids = await _mediator.Send(new GetKidsByDateQuery(lastDayOfMonth), ct);
             var invoices = await _mediator.Send(new GetMonthlyInvoicesByDateQuery(request.Date), ct);
 
-            invoices.ForEach(async invoice =>
+            invoices.ForEach(invoice =>
             {
-                var presencesSummary = await _mediator.Send(new GetMonthlyPresencesByKidQuery(invoice.KidId, request.Date));
-                var entity = _context.Set<Invoice>().Find(invoice.Id);
+                var entity = _context.Set<Invoice>().Include(x => x.Kid).Include(x => x.BillingParent).AsQueryable().First(x => x.Id == invoice.Id);
                 entity = _mapper.Map<InvoiceDto, Invoice>(invoice, entity);
-                entity.Amount = presencesSummary.TotalAmount;
+
+                var subscriptionPaidInMonth = entity.Kid.SubscriptionPaidDate.HasValue && IsInMonth(entity.Kid.SubscriptionPaidDate.Value, request.Date);
+                if (subscriptionPaidInMonth)
+                {
+                    entity.SubscriptionAmount = entity.Kid.SubscriptionAmount;
+                    entity.SubscriptionPaidDate = entity.Kid.SubscriptionPaidDate;
+                }
+
                 _context.Update(entity);
             });
 
@@ -56,13 +66,17 @@ namespace Ciripa.Business.Commands
                 if (invoices.SingleOrDefault(p => p.KidId == kid.Id) == null)
                 {
                     var presencesSummary = await _mediator.Send(new GetMonthlyPresencesByKidQuery(kid.Id, request.Date));
-                    if (presencesSummary?.TotalAmount != null)
+                    var extraPresencesSummary = await _mediator.Send(new GetMonthlyExtraPresencesByKidQuery(kid.Id, request.Date));
+
+                    var subscriptionPaidInMonth = kid.SubscriptionPaidDate.HasValue && IsInMonth(kid.SubscriptionPaidDate.Value, request.Date);
+
+                    if (subscriptionPaidInMonth)
                     {
-                        missingInvoices.Add(new Invoice(kid.Id, request.Date, presencesSummary.TotalAmount, presencesSummary.TotalHours));
+                        missingInvoices.Add(new Invoice(kid.Id, request.Date, kid.SubscriptionAmount, kid.SubscriptionPaidDate.Value));
                     }
                     else
                     {
-                        missingInvoices.Add(new Invoice(kid.Id, request.Date, 0, presencesSummary.TotalHours));
+                        missingInvoices.Add(new Invoice(kid.Id, request.Date));
                     }
                 }
             });
@@ -75,6 +89,16 @@ namespace Ciripa.Business.Commands
             await _context.SaveChangesAsync(ct);
 
             return await _mediator.Send(new GetMonthlyInvoicesByDateQuery(request.Date), ct);
+        }
+
+        private bool IsInMonth(Date subscriptionPaidDate, Date currentMonthDate)
+        {
+            return subscriptionPaidDate.Year == currentMonthDate.Year && subscriptionPaidDate.Month == currentMonthDate.Month;
+        }
+        private static Date GetLastDayOfMonth(DateTime requestDate)
+        {
+            var lastDayOfMonth = new DateTime(requestDate.Year, requestDate.Month, DateTime.DaysInMonth(requestDate.Year, requestDate.Month));
+            return new Date(lastDayOfMonth);
         }
     }
 }

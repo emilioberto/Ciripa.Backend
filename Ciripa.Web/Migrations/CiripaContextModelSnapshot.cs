@@ -104,13 +104,10 @@ namespace Ciripa.Web.Migrations
                     b.Property<decimal?>("Amount")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("BillingParentId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal?>("Hours")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal?>("InvoiceAmount")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("KidId")
@@ -124,6 +121,12 @@ namespace Ciripa.Web.Migrations
 
                     b.Property<int?>("PaymentMethod")
                         .HasColumnType("INTEGER");
+
+                    b.Property<decimal?>("SubscriptionAmount")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("SubscriptionPaidDate")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -508,6 +511,52 @@ namespace Ciripa.Web.Migrations
                         .HasForeignKey("KidId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.OwnsOne("Ciripa.Data.Entities.Parent", "BillingParent", b1 =>
+                        {
+                            b1.Property<int>("InvoiceId")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<string>("Address")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<bool>("Billing")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<string>("Cap")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("City")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Email")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("FirstName")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("FiscalCode")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<int>("Id")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<string>("LastName")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Phone")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Province")
+                                .HasColumnType("TEXT");
+
+                            b1.HasKey("InvoiceId");
+
+                            b1.ToTable("Invoice");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InvoiceId");
+                        });
                 });
 
             modelBuilder.Entity("Ciripa.Data.Entities.Kid", b =>
