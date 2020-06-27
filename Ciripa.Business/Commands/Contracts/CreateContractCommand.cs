@@ -32,7 +32,7 @@ namespace Ciripa.Business.Commands
         public Task<int> Handle(CreateContractCommand request, CancellationToken ct)
         {
             var contract = request.Contract;
-            var entity = _mapper.Map<Contract>(contract);
+            var entity = _mapper.Map<SimpleContract>(contract);
             _context.Add(entity);
 
             return _context.SaveChangesAsync(ct);

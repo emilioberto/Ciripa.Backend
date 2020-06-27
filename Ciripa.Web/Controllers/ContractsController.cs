@@ -24,6 +24,12 @@ namespace Ciripa.Web.Controllers
             return await _mediator.Send(new GetContractsListQuery());
         }
 
+        [HttpGet("special")]
+        public async Task<List<SpecialContractDto>> GetSpecialContractsList()
+        {
+            return await _mediator.Send(new GetSpecialContractsListQuery());
+        }
+
         [HttpPost()]
         public Task<int> CreateContract([FromBody] ContractDto contract)
         {

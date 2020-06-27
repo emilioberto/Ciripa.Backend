@@ -43,7 +43,7 @@ namespace Ciripa.Business.Commands
                 throw new InvalidOperationException("Cannot update a contract already in use");
             }
 
-            var entity = _context.Set<Contract>().Find(request.Id);
+            var entity = _context.Set<SimpleContract>().Find(request.Id);
             entity = _mapper.Map(request.Contract, entity);
             _context.Update(entity);
             return await _context.SaveChangesAsync(ct);

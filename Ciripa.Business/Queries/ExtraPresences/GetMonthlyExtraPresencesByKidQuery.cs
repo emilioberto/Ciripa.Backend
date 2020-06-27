@@ -4,51 +4,49 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Ciripa.Data;
 using Ciripa.Data.Entities;
-using Ciripa.Data.Interfaces;
 using Ciripa.Domain;
 using Ciripa.Domain.DTO;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Ciripa.Business.Queries.Presences
+namespace Ciripa.Business.Queries.ExtraPresences
 {
-    public class GetMonthlyPresencesByKidQuery : IRequest<PresencesSummaryDto>
+    public class GetMonthlyExtraPresencesByKidQuery : IRequest<ExtraPresencesSummaryDto>
     {
         public int KidId { get; private set; }
         public Date Date { get; private set; }
 
-        public GetMonthlyPresencesByKidQuery(int kidId, Date date)
+        public GetMonthlyExtraPresencesByKidQuery(int kidId, Date date)
         {
             KidId = kidId;
             Date = date;
         }
     }
 
-    public class
-        GetKidPresencesByDateQueryHandler : IRequestHandler<GetMonthlyPresencesByKidQuery, PresencesSummaryDto>
+    public class GetKidExtraPresencesByDateQueryHandler : IRequestHandler<GetMonthlyExtraPresencesByKidQuery, ExtraPresencesSummaryDto>
     {
         private readonly CiripaContext _context;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public GetKidPresencesByDateQueryHandler(CiripaContext context, IMapper mapper, IMediator mediator)
+        public GetKidExtraPresencesByDateQueryHandler(CiripaContext context, IMapper mapper, IMediator mediator)
         {
             _context = context;
             _mapper = mapper;
             _mediator = mediator;
         }
 
-        public async Task<PresencesSummaryDto> Handle(GetMonthlyPresencesByKidQuery request, CancellationToken ct)
+        public async Task<ExtraPresencesSummaryDto> Handle(GetMonthlyExtraPresencesByKidQuery request, CancellationToken ct)
         {
             var kid = await _mediator.Send(new GetKidQuery(request.KidId));
             var settings = await _context.Set<Settings>().FirstAsync(ct);
 
             var result = await _context
-                .Set<Presence>()
+                .Set<ExtraPresence>()
                 .Where(x => x.KidId == request.KidId)
+                .Include(x => x.SpecialContract)
                 .OrderBy(x => x.Date)
                 .ToListAsync(ct);
 
@@ -60,15 +58,15 @@ namespace Ciripa.Business.Queries.Presences
                 .Select(day => new Date(request.Date.Year, request.Date.Month, day))
                 .ToList();
 
-            var presenceList = new List<Presence>();
+            var presenceList = new List<ExtraPresence>();
 
             daysInMonth.ForEach(day =>
             {
                 var dailyPresence = existingPresences.SingleOrDefault(x => x.Date == day);
-                presenceList.Add(dailyPresence ?? new Presence(request.KidId, day));
+                presenceList.Add(dailyPresence ?? new ExtraPresence(request.KidId, day));
             });
 
-            var presences = _mapper.Map<List<PresenceListItemDto>>(presenceList);
+            var presences = _mapper.Map<List<ExtraPresenceListItemDto>>(presenceList);
 
             var totalHours = CalculateTotalHours(presences);
             var totalExtraServiceTimeHours = 0m;
@@ -86,8 +84,8 @@ namespace Ciripa.Business.Queries.Presences
 
                     var exceedingContractHours = exceedingPresence.DailyHours - kid.Contract.DailyHours;
 
-                    var exceedingMorningServiceTimeHours = CalculateExceedingMorningServiceTime(exceedingPresence, kid.Contract);
-                    var exceedingEveningServiceTimeHours = CalculateExceedingEveningServiceTime(exceedingPresence, kid.Contract);
+                    var exceedingMorningServiceTimeHours = CalculateExceedingMorningServiceTime(exceedingPresence, exceedingPresence.SpecialContract);
+                    var exceedingEveningServiceTimeHours = CalculateExceedingEveningServiceTime(exceedingPresence, exceedingPresence.SpecialContract);
                     var totalExceedingServiceTimeHours = exceedingMorningServiceTimeHours + exceedingEveningServiceTimeHours;
                     totalExtraServiceTimeHours += totalExceedingServiceTimeHours;
                     totalExtraContractHours += (exceedingContractHours - totalExceedingServiceTimeHours);
@@ -100,19 +98,19 @@ namespace Ciripa.Business.Queries.Presences
             {
                 var exceedingMonthlyContractHours = Math.Max((totalHours - kid.Contract.MonthlyHours), 0);
 
-                presences.ForEach(presence =>
+                presences.ForEach(extraPresence =>
                 {
-                    if (presence.Id == 0)
+                    if (extraPresence.Id == 0)
                     {
                         return;
                     }
 
-                    var exceedingMorningServiceTimeHours = CalculateExceedingMorningServiceTime(presence, kid.Contract);
-                    var exceedingEveningServiceTimeHours = CalculateExceedingEveningServiceTime(presence, kid.Contract);
+                    var exceedingMorningServiceTimeHours = CalculateExceedingMorningServiceTime(extraPresence, extraPresence.SpecialContract);
+                    var exceedingEveningServiceTimeHours = CalculateExceedingEveningServiceTime(extraPresence, extraPresence.SpecialContract);
                     var totalExceedingServiceTimeHours = exceedingMorningServiceTimeHours + exceedingEveningServiceTimeHours;
                     totalExtraServiceTimeHours += totalExceedingServiceTimeHours;
 
-                    presences.Single(x => x.Id == presence.Id).ExtraServiceTimeHours = totalExceedingServiceTimeHours;
+                    presences.Single(x => x.Id == extraPresence.Id).ExtraServiceTimeHours = totalExceedingServiceTimeHours;
                 });
 
                 if (exceedingMonthlyContractHours > 0)
@@ -126,7 +124,7 @@ namespace Ciripa.Business.Queries.Presences
 
             var totalAmount = kid.Contract.MinContractValue + (totalExtraContractHours * kid.Contract.HourCost) + (totalExtraServiceTimeHours * kid.Contract.ExtraHourCost);
 
-            return new PresencesSummaryDto(presences, totalHours, totalExtraContractHours, totalExtraServiceTimeHours, totalAmount);
+            return new ExtraPresencesSummaryDto(presences, totalHours, totalExtraContractHours, totalExtraServiceTimeHours, totalAmount);
         }
 
         private bool IsNotWeekend(DateTime date)
@@ -134,7 +132,7 @@ namespace Ciripa.Business.Queries.Presences
             return date.DayOfWeek != DayOfWeek.Saturday && date.DayOfWeek != DayOfWeek.Sunday;
         }
 
-        private decimal CalculateExceedingMorningServiceTime(PresenceListItemDto presence, SimpleContract contract)
+        private decimal CalculateExceedingMorningServiceTime(ExtraPresenceListItemDto presence, SpecialContract contract)
         {
             if (!presence.MorningEntry.HasValue)
             {
@@ -151,7 +149,7 @@ namespace Ciripa.Business.Queries.Presences
             return 0m;
         }
 
-        private decimal CalculateExceedingEveningServiceTime(PresenceListItemDto presence, SimpleContract contract)
+        private decimal CalculateExceedingEveningServiceTime(ExtraPresenceListItemDto presence, SpecialContract contract)
         {
             if (!presence.EveningExit.HasValue)
             {
@@ -174,7 +172,7 @@ namespace Ciripa.Business.Queries.Presences
             return new DateTime(mindate.Year, mindate.Month, mindate.Day, value.Hour, value.Minute, 0);
         }
 
-        private decimal CalculateTotalHours(List<PresenceListItemDto> presences)
+        private decimal CalculateTotalHours(List<ExtraPresenceListItemDto> presences)
         {
             var dainlyHoursSum = presences.Sum(x => x.DailyHours);
             return Convert.ToDecimal(dainlyHoursSum);

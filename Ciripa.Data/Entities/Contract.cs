@@ -3,7 +3,7 @@ using System;
 
 namespace Ciripa.Data.Entities
 {
-    public class Contract : IBaseEntity
+    public abstract class Contract : IBaseEntity
     {
         public int Id { get; set; }
         public string Description { get; set; }

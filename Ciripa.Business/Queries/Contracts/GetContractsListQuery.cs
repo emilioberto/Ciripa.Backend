@@ -31,7 +31,7 @@ namespace Ciripa.Business.Queries
 
         public Task<List<ContractDto>> Handle(GetContractsListQuery request, CancellationToken ct)
         {
-            return _context.Set<Contract>()
+            return _context.Set<SimpleContract>()
                 .ProjectTo<ContractDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(ct);
         }

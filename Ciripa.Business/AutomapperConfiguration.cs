@@ -33,7 +33,18 @@ namespace Ciripa.Business
                 .ForMember(x => x.EveningHours, opt => opt.MapFrom(x => CalculateEveningHours(x)))
                 .ForMember(x => x.DailyHours, opt => opt.MapFrom(x => CalculateDailyHours(x)))
                 .ReverseMap();
-            
+
+            CreateMap<ExtraPresence, ExtraPresenceDto>();
+
+            CreateMap<ExtraPresenceDto, ExtraPresence>()
+                .ForMember(x => x.Kid, opt => opt.Ignore());
+
+            CreateMap<ExtraPresence, ExtraPresenceListItemDto>()
+                .ForMember(x => x.MorningHours, opt => opt.MapFrom(x => CalculateMorningHours(x)))
+                .ForMember(x => x.EveningHours, opt => opt.MapFrom(x => CalculateEveningHours(x)))
+                .ForMember(x => x.DailyHours, opt => opt.MapFrom(x => CalculateDailyHours(x)))
+                .ReverseMap();
+
             CreateMap<Settings, SettingsDto>()
                 .ReverseMap();
 
@@ -42,10 +53,13 @@ namespace Ciripa.Business
             CreateMap<InvoiceDto, Invoice>()
                 .ForMember(x => x.Kid, opt => opt.Ignore());
 
-            CreateMap<Contract, ContractDto>()
+            CreateMap<SimpleContract, ContractDto>()
                 .ReverseMap();
 
             CreateMap<Parent, ParentDto>()
+                .ReverseMap();
+
+            CreateMap<SpecialContract, SpecialContractDto>()
                 .ReverseMap();
         }
 
@@ -57,7 +71,7 @@ namespace Ciripa.Business
             }
 
             var totalHours = (presence.MorningExit.Value - presence.MorningEntry.Value).TotalHours;
-            var result = Math.Round(Convert.ToDecimal(totalHours) * 2.0m, MidpointRounding.AwayFromZero) / 2.0m;
+            var result = Math.Ceiling(Convert.ToDecimal(totalHours) * 2.0m) / 2.0m;
             return result;
         }
         
@@ -69,13 +83,42 @@ namespace Ciripa.Business
             }
 
             var totalHours = (presence.EveningExit.Value - presence.EveningEntry.Value).TotalHours;
-            var result = Math.Round(Convert.ToDecimal(totalHours) * 2.0m, MidpointRounding.AwayFromZero) / 2.0m;
+            var result = Math.Ceiling(Convert.ToDecimal(totalHours) * 2.0m) / 2.0m;
             return result;
         }
 
         private decimal CalculateDailyHours(Presence presence)
         {
             return CalculateMorningHours(presence) + CalculateEveningHours(presence);
+        }
+
+        private decimal CalculateMorningHours(ExtraPresence extraPresence)
+        {
+            if (extraPresence.MorningEntry == null || extraPresence.MorningExit == null)
+            {
+                return 0;
+            }
+
+            var totalHours = (extraPresence.MorningExit.Value - extraPresence.MorningEntry.Value).TotalHours;
+            var result = Math.Ceiling(Convert.ToDecimal(totalHours) * 2.0m) / 2.0m;
+            return result;
+        }
+
+        private decimal CalculateEveningHours(ExtraPresence extraPresence)
+        {
+            if (extraPresence.EveningEntry == null || extraPresence.EveningExit == null)
+            {
+                return 0;
+            }
+
+            var totalHours = (extraPresence.EveningExit.Value - extraPresence.EveningEntry.Value).TotalHours;
+            var result = Math.Ceiling(Convert.ToDecimal(totalHours) * 2.0m) / 2.0m;
+            return result;
+        }
+
+        private decimal CalculateDailyHours(ExtraPresence extraPresence)
+        {
+            return CalculateMorningHours(extraPresence) + CalculateEveningHours(extraPresence);
         }
     }
 }

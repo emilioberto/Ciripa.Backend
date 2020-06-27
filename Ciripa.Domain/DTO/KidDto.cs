@@ -13,7 +13,7 @@ namespace Ciripa.Domain.DTO
         public DateTime From { get; set; }
         public DateTime? To { get; set; }
         public int ContractId { get; set; }
-        public Contract Contract { get; set; }
+        public SimpleContract Contract { get; set; }
         public string Notes { get; set; }
         public DateTime? SubscriptionPaidDate { get; set; }
         public decimal SubscriptionAmount { get; set; }

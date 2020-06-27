@@ -3,7 +3,7 @@ using System;
 
 namespace Ciripa.Domain.DTO
 {
-    public class PresenceDto
+    public class ExtraPresenceDto
     {
         public int? Id { get; set; }
         public Date Date { get; set; }
@@ -13,5 +13,6 @@ namespace Ciripa.Domain.DTO
         public DateTime? EveningExit { get; set; }
         public int KidId { get; set; }
         public KidDto Kid { get; set; }
+        public int SpecialContractId { get; set; }
     }
 }

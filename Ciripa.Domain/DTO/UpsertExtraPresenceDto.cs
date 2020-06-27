@@ -1,9 +1,8 @@
-﻿using Ciripa.Data.Entities;
-using System;
+﻿using System;
 
 namespace Ciripa.Domain.DTO
 {
-    public class PresenceDto
+    public class UpsertExtraPresenceDto
     {
         public int? Id { get; set; }
         public Date Date { get; set; }
@@ -11,7 +10,6 @@ namespace Ciripa.Domain.DTO
         public DateTime? MorningExit { get; set; }
         public DateTime? EveningEntry { get; set; }
         public DateTime? EveningExit { get; set; }
-        public int KidId { get; set; }
-        public KidDto Kid { get; set; }
+        public int SpecialContractId { get; set; }
     }
 }
