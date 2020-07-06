@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Ciripa.Business.Commands;
 using Ciripa.Business.Queries;
+using Ciripa.Business.Queries.Presences;
 using Ciripa.Domain.DTO;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,12 @@ namespace Ciripa.Web.Controllers
         public Task<int> UpsertInvoices([FromBody] List<InvoiceDto> invoices)
         {
             return _mediator.Send(new UpsertInvoicesCommand(invoices));
+        }
+
+        [HttpPut("year")]
+        public Task<List<YearInvoiceTotalDto>> UpsertInvoices([FromBody] ByDateDto model)
+        {
+            return _mediator.Send(new GetYearInvoicesByDateQuery(model.Date));
         }
     }
 }
