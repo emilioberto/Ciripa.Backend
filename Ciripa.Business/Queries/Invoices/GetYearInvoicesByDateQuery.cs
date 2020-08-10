@@ -56,7 +56,7 @@ namespace Ciripa.Business.Queries.Presences
                 {
                     Kid = _mapper.Map<KidDto>(x.First().Kid),
                     KidId = x.First().KidId,
-                    Amount = x.Sum(x => x.Amount + x.SubscriptionAmount),
+                    Amount = x.Sum(x => (x.Amount.HasValue ? x.Amount : 0m) + (x.SubscriptionAmount.HasValue ? x.SubscriptionAmount : 0)),
                     BillingParent = _mapper.Map<ParentDto>(billingParent),
                 };
             }).ToList();

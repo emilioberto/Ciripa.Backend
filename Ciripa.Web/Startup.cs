@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using AutoMapper;
 using Ciripa.Business;
 using Ciripa.Data;
@@ -71,6 +72,8 @@ namespace Ciripa.Web
                 c.DisplayRequestDuration();
             });
 
+            BackupDatabase(app);
+
             MigrateDatabase(app);
 
             if (env.IsDevelopment())
@@ -95,14 +98,28 @@ namespace Ciripa.Web
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
+        private void BackupDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<CiripaContext>();
+                context.BackupDatabase();
+            }
+        }
+
         private void MigrateDatabase(IApplicationBuilder app)
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-
-                Console.WriteLine("Migrating database");
                 var context = serviceScope.ServiceProvider.GetRequiredService<CiripaContext>();
-                context.Database.Migrate();
+
+                var pendingMigrations = context.Database.GetPendingMigrations();
+                if (pendingMigrations.Count() > 0)
+                {
+                    Console.WriteLine("Migrating database");
+                    context.Database.Migrate();
+                }
+
             }
         }
     }

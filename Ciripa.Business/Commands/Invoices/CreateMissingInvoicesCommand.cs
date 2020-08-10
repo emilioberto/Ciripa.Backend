@@ -51,8 +51,10 @@ namespace Ciripa.Business.Commands
                 entity = _mapper.Map<InvoiceDto, Invoice>(invoice, entity);
 
                 var subscriptionPaidInMonth = entity.Kid.SubscriptionPaidDate.HasValue && IsInMonth(entity.Kid.SubscriptionPaidDate.Value, request.Date);
-                if (subscriptionPaidInMonth)
+                if (subscriptionPaidInMonth && invoices.All(x => x.KidId == invoice.KidId && x.SubscriptionAmount == null))
                 {
+                    invoice.SubscriptionAmount = entity.Kid.SubscriptionAmount;
+                    invoice.SubscriptionPaidDate = entity.Kid.SubscriptionPaidDate;
                     entity.SubscriptionAmount = entity.Kid.SubscriptionAmount;
                     entity.SubscriptionPaidDate = entity.Kid.SubscriptionPaidDate;
                 }

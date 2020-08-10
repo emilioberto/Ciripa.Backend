@@ -1,8 +1,9 @@
 ﻿using Ciripa.Data.Entities;
-using Ciripa.Domain;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Ciripa.Data
 {
@@ -27,7 +28,10 @@ namespace Ciripa.Data
         {
             base.OnConfiguring(optionsBuilder);
 
-            optionsBuilder.UseSqlite(@"Data Source=ciripa.db", b => b.MigrationsAssembly("Ciripa.Web"));
+            EnsureDatabaseDirectoryExists();
+
+            optionsBuilder.UseSqlite(CiripaDatabaseConnection(), b => b.MigrationsAssembly("Ciripa.Web"));
+            //optionsBuilder.UseSqlite(@"Data Source=ciripa.db", b => b.MigrationsAssembly("Ciripa.Web"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -82,6 +86,61 @@ namespace Ciripa.Data
             modelBuilder
                 .Entity<SpecialContract>()
                 .HasData(SpecialContractsSeedData());
+        }
+
+        private string CiripaDatabaseDirectoryPath() =>
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"DatabaseCiripa");
+
+        private string BackupsDirectoryPath() =>
+            Path.Combine(CiripaDatabaseDirectoryPath(), @"Backups");
+
+        private SqliteConnection CiripaDatabaseConnection()
+        {
+            var databasePath = Path.Combine(CiripaDatabaseDirectoryPath(), @"ciripa.db");
+            var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = databasePath };
+            var connectionString = connectionStringBuilder.ToString();
+            return new SqliteConnection(connectionString);
+        }
+
+        private void EnsureDatabaseDirectoryExists()
+        {
+            if (!Directory.Exists(CiripaDatabaseDirectoryPath()))
+            {
+                Directory.CreateDirectory(CiripaDatabaseDirectoryPath());
+            }
+            if (!Directory.Exists(BackupsDirectoryPath()))
+            {
+                Directory.CreateDirectory(BackupsDirectoryPath());
+            }
+        }
+
+        public void BackupDatabase()
+        {
+            EnsureDatabaseDirectoryExists();
+
+            // Backup connection
+            var filename = $@"backup.{DateTime.Now.ToString("yyyy-MM-dd")}.db";
+            var backupFilePath = Path.Combine(BackupsDirectoryPath(), filename);
+            if (File.Exists(backupFilePath))
+            {
+                Console.WriteLine("Database backup already created for today");
+                return;
+            }
+
+            var backupConnectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = backupFilePath };
+            var backupConnectionString = backupConnectionStringBuilder.ToString();
+
+            using (var location = CiripaDatabaseConnection())
+            using (var destination = new SqliteConnection(backupConnectionString))
+            {
+                Console.WriteLine("Database backup started");
+                location.Open();
+                destination.Open();
+                location.BackupDatabase(destination);
+                location.Close();
+                destination.Close();
+                Console.WriteLine("Database backup completed");
+            }
         }
 
         private List<SimpleContract> ContractsSeedData()
