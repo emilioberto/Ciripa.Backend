@@ -87,7 +87,7 @@ namespace Ciripa.Business
             }
 
             var totalHours = (presence.MorningExit.Value - presence.MorningEntry.Value).TotalHours;
-            var result = Math.Ceiling(Convert.ToDecimal(totalHours) * 2.0m) / 2.0m;
+            var result = Math.Round(Convert.ToDecimal(totalHours) * 2, MidpointRounding.AwayFromZero) / 2.0m;
             return result;
         }
 
@@ -99,7 +99,7 @@ namespace Ciripa.Business
             }
 
             var totalHours = (presence.EveningExit.Value - presence.EveningEntry.Value).TotalHours;
-            var result = Math.Ceiling(Convert.ToDecimal(totalHours) * 2.0m) / 2.0m;
+            var result = Math.Round(Convert.ToDecimal(totalHours) * 2, MidpointRounding.AwayFromZero) / 2.0m;
             return result;
         }
 
@@ -116,7 +116,7 @@ namespace Ciripa.Business
             }
 
             var totalHours = (extraPresence.MorningExit.Value - extraPresence.MorningEntry.Value).TotalHours;
-            var result = Math.Ceiling(Convert.ToDecimal(totalHours) * 2.0m) / 2.0m;
+            var result = Math.Round(Convert.ToDecimal(totalHours) * 2, MidpointRounding.AwayFromZero) / 2.0m;
             return result;
         }
 
@@ -128,7 +128,7 @@ namespace Ciripa.Business
             }
 
             var totalHours = (extraPresence.EveningExit.Value - extraPresence.EveningEntry.Value).TotalHours;
-            var result = Math.Ceiling(Convert.ToDecimal(totalHours) * 2.0m) / 2.0m;
+            var result = Math.Round(Convert.ToDecimal(totalHours) * 2, MidpointRounding.AwayFromZero) / 2.0m;
             return result;
         }
 

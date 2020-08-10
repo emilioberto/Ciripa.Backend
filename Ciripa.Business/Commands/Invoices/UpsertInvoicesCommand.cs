@@ -49,13 +49,16 @@ namespace Ciripa.Business.Commands
                 }
                 else
                 {
-                    var duplicated = _context.Set<Invoice>().AsQueryable().Any(x => x.Date == invoice.Date && x.KidId == invoice.KidId && x.Id != invoice.Id);
-                    if (duplicated)
-                    {
-                        throw new Exception();
-                    }
-                    
+                    // Ignorare duplicati... al massimo si mette 0 su tutto..
+                    //var duplicated = _context.Set<Invoice>().AsQueryable().Any(x => x.Date == invoice.Date && x.KidId == invoice.KidId && x.Id != invoice.Id);
+                    //if (duplicated)
+                    //{
+                    //    throw new Exception();
+                    //}
+
                     var entity = _mapper.Map<Invoice>(invoice);
+                    entity.SubscriptionPaidDate = null;
+                    entity.SubscriptionAmount = null;
                     _context.Add(entity);
                 }
             }

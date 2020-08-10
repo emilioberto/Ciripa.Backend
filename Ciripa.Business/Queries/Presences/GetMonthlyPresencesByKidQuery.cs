@@ -118,9 +118,14 @@ namespace Ciripa.Business.Queries.Presences
                 if (exceedingMonthlyContractHours > 0)
                 {
                     totalExtraContractHours += exceedingMonthlyContractHours - totalExtraServiceTimeHours;
+                    //presences.Last(x => IsNotWeekend(x.Date.AsDateTime())).ExtraContractHours = totalExtraContractHours;
+                    presences.Add(new PresenceListItemDto
+                    {
+                        Date = Date.MaxValue,
+                        ExtraContractHours = totalExtraContractHours,
+                    });
                 }
 
-                presences.Last(x => IsNotWeekend(x.Date.AsDateTime())).ExtraContractHours = totalExtraContractHours;
             }
 
 
@@ -146,7 +151,7 @@ namespace Ciripa.Business.Queries.Presences
             if (startTime > morningTime)
             {
                 var totalHours = (startTime - morningTime).TotalHours;
-                return Math.Ceiling(Convert.ToDecimal(totalHours) * 2.0m) / 2.0m;
+                return Math.Round(Convert.ToDecimal(totalHours) * 2, MidpointRounding.AwayFromZero) / 2.0m;
             }
             return 0m;
         }
@@ -163,7 +168,7 @@ namespace Ciripa.Business.Queries.Presences
             if (endTime < eveningTime)
             {
                 var totalHours = (eveningTime - endTime).TotalHours;
-                return Math.Ceiling(Convert.ToDecimal(totalHours) * 2.0m) / 2.0m;
+                return Math.Round(Convert.ToDecimal(totalHours) * 2, MidpointRounding.AwayFromZero) / 2;
             }
             return 0m;
         }

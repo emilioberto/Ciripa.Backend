@@ -63,7 +63,7 @@ namespace Ciripa.Business.Commands
             var missingInvoices = new List<Invoice>();
             kids.ForEach(async kid =>
             {
-                if (invoices.SingleOrDefault(p => p.KidId == kid.Id) == null)
+                if (invoices.Where(p => p.KidId == kid.Id).Count() == 0)
                 {
                     var presencesSummary = await _mediator.Send(new GetMonthlyPresencesByKidQuery(kid.Id, request.Date));
                     var extraPresencesSummary = await _mediator.Send(new GetMonthlyExtraPresencesByKidQuery(kid.Id, request.Date));
