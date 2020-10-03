@@ -42,6 +42,7 @@ namespace Ciripa.Business.Commands
             var presences = await _mediator.Send(new GetPresencesByDateQuery(request.Date), ct);
 
             var missingPresences = new List<Presence>();
+            kids = kids.Where(x => !x.ExtraServicesEnabled).ToList();
             kids.ForEach(kid =>
             {
                 if (presences.SingleOrDefault(p => p.KidId == kid.Id) == null)
